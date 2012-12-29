@@ -207,6 +207,14 @@ function redraw(data) {
                     str += "<br />Score: " + plr.score + " - Cash: $" + plr.cash;
                 if (playerspecs[plr.id])
                     str += "<br />Spectators: " + playerspecs[plr.id];
+
+                for (var k in mapzones) {
+                    zone = mapzones[k];
+                    if (Vector2D(plr.pos.x, plr.pos.y).inarea(zone.vstart, zone.vend)) {
+                        str += "<br />District: " + zone.name;
+                        break;
+                    }
+                }
                 Vector2D(plr.pos.x, plr.pos.y).tooltip(5, true, str, plr.id);
             }
             plrstr += "<tr><td class=\"id\">" + plr.id + "</td><td>" + colored_name(plr.name, plr.team) + "</td><td class=\"score\">" + plr.score + "</td><td class=\"ping\">" + plr.ping + "</td></tr>";
