@@ -434,5 +434,5 @@ function updateChatBox() {
 
 function update() {
     $.getJSON('data.json', redraw);
-    window.setTimeout("update()", 2500);
+    window.setTimeout("update()", updaterate);
 }
