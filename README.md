@@ -4,6 +4,8 @@ vcmp-livemap
 Web-based Live Map for Vice City Multiplayer
 
 The map uses the ``data.json`` file in its web directory, which you have to update from the server, by default every 5 seconds.
+You can use online services that can validate and parse your JSON data if it is correct. You can visit them there:
+http://jsonlint.com/
 
 Example for ``data.json``:
 ````json
@@ -29,8 +31,7 @@ Example for ``data.json``:
             "vehicle": null,
             "pos": {
                 "y": 941.733,
-                "x": -672.98,
-                "z": 11.2629
+                "x": -672.98
             },
             "spectating": null
         },
@@ -52,8 +53,7 @@ Example for ``data.json``:
             },
             "pos": {
                 "y": 941.733,
-                "x": -672.98,
-                "z": 11.2629
+                "x": -672.98
             },
             "spectating": 0
         }
