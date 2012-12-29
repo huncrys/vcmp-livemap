@@ -1,5 +1,5 @@
 body {
-    background-color: #F5F5F5;
+    background-color: #94C8F8;
     font: monospace;
     margin: 0;
     padding: 0;
@@ -26,6 +26,10 @@ canvas {
     font-family: "Verdana", "Courier New", Courier, monospace;
     font-size: 10px;
     white-space: nowrap;
+	-webkit-border-radius: 6px;
+	border-radius: 6px;
+	-webkit-box-shadow: 2px 2px 2px #000000;
+	box-shadow: 2px 2px 2px #000000;
 }
 
 .fltooltip span.red {
@@ -47,6 +51,10 @@ canvas {
     font-size: 12px;
     overflow:hidden;
     white-space:nowrap;
+    -webkit-border-radius: 6px;
+	border-radius: 6px;
+	-webkit-box-shadow: 2px 2px 2px #000000;
+	box-shadow: 2px 2px 2px #000000;
 }
 
 #chatbox span {
@@ -102,6 +110,10 @@ canvas {
     font-family: "Verdana", "Courier New", Courier, monospace;
     font-size: 12px;
     white-space: nowrap;
+    -webkit-border-radius: 6px;
+	border-radius: 6px;
+	-webkit-box-shadow: 2px 2px 2px #000000;
+	box-shadow: 2px 2px 2px #000000;
 }
 
 #players table {
