@@ -109,7 +109,7 @@ Vector2D.prototype.star = function(a, n, color) {
     ctx.fillStyle = color;
     ctx.beginPath();
     ctx.moveTo(Math.cos(angle)*x+vec.x, Math.sin(angle)*x+vec.y);
-    for(var i=1;i<n;i++){
+    for (var i=1;i<n;i++) {
         angle += tangle;
         ctx.lineTo(Math.cos(angle)*x+vec.x, Math.sin(angle)*x+vec.y);
     }
@@ -170,35 +170,33 @@ function redraw(data) {
         return;
 
     var timestart = new Date().getTime();
-    /*var show = {
-        hear:$("#showhear").attr("checked"), adbrcl:$("#showadbrcl").attr("checked"), packagerampage:$("#showpackagerampage").attr("checked"),
-        weapon:$("#showweapon").attr("checked"), blip:$("#showblip").attr("checked"), restart:$("#showrestart").attr("checked"),
-        vehicle:$("#showvehicle").attr("checked")
-    }*/
-    ctx.clearRect(0, 0, 768, 768);
 
+    // Clear the canvas and the tooltip list
+    ctx.clearRect(0, 0, 768, 768);
     tooltips = [];
+
+    // Draw player blips, list, tooltips
     var plrdiv = $("#players");
-    
     if (data.players.length > 0) {
         var plrstr = "";
         data.players.sort(function(a,b) {
             return parseInt(b.score,10) - parseInt(a.score,10);
         });
 
-        var playerspecs = [];
+        var playerspecs = [], tmpname;
         for (var ii in data.players) {
             if (data.players[ii].spectating == null) continue;
-            var tmpname = "<span style=\"color: lightgray\">" + safe_tags_replace(data.players[ii].name) + "</span>";
+            tmpname = "<span style=\"color: lightgray\">" + safe_tags_replace(data.players[ii].name) + "</span>";
             if (!playerspecs[data.players[ii].spectating]) playerspecs[data.players[ii].spectating] = tmpname;
             else playerspecs[data.players[ii].spectating] += ", " + tmpname;
         }
-            
+        
+        var plr, str;
         for (var i in data.players) {
-            var plr = data.players[i];
+            plr = data.players[i];
             if (plr.spectating == null) {
                 Vector2D(plr.pos.x, plr.pos.y).dot(5, (teamcolors[plr.team] || teamcolors[255]));
-                var str = "<strong>" + safe_tags_replace(plr.name) + "</strong> <span class=\"red\">[" + plr.id + "]</span>" + (plr.hp > 0 ? " - " + plr.hp + " HP" + (plr.ap > 0 ? " | " + plr.ap + " AP" : "") : "") + "<br />Skin: " + skins[plr.skin];
+                str = "<strong>" + safe_tags_replace(plr.name) + "</strong> <span class=\"red\">[" + plr.id + "]</span>" + (plr.hp > 0 ? " - " + plr.hp + " HP" + (plr.ap > 0 ? " | " + plr.ap + " AP" : "") : "") + "<br />Skin: " + skins[plr.skin];
                 if (plr.vehicle && vehiclemodels[plr.vehicle.model]) {
                     str += "<br />Vehicle: " + vehiclemodels[plr.vehicle.model] + " <span style=\"color: #000000;font-weight: bold\"><span style=\"background-color: " + vehiclecolors[plr.vehicle.color[0]] + "\">" + plr.vehicle.color[0] + "</span> <span style=\"background-color: " + vehiclecolors[plr.vehicle.color[1]] + "\">" + plr.vehicle.color[1] + "</span></span>";
                 }
@@ -222,11 +220,12 @@ function redraw(data) {
     else
         plrdiv.html("").css('display', 'none');
     
+    // Draw chatbox
     var chatdiv = $("#chatbox");
     if (data.messages.length > 0) {
-        var msgstr = "";
+        var msgstr = "", msg;
         for (var i in data.messages) {
-            var msg = data.messages[i];
+            msg = data.messages[i];
             switch (msg.type) { // Events
                 case 1: // join
                     msgstr += "<span class=\"join\">* " + colored_name(msg.name, msg.team) + " joined" + (msg.country ? " from <span class=\"skin\">" + msg.country + "</span>" : "") + ".</span>";
@@ -266,12 +265,15 @@ function redraw(data) {
 
     updateChatBox();
 
+    // Show last active tooltip if it exists
     showTooltip(activetooltip.id);
     
+    // Update info tooltip
     $("#infotooltip").text("Server: " + data.hostname + " | Players: " + data.numplayers + "/" + data.maxplayers);
 
     timestart = new Date().getTime() - timestart;
 
+    // Update timing tooltip
     $("#drawtiming").html("Time: <strong>" + (data.hour <= 9 ? "0" : "") + data.hour + ":" + (data.minute <= 9 ? "0" : "") + data.minute + "</strong><br />" + (weathers[data.weather] ? "Weather: <strong>" + weathers[data.weather] + "</strong><br />" : "") + "Rendered in <strong>"+timestart+"</strong> ms.").css('display', 'block');
     updateTimeTooltip();
 }
@@ -299,22 +301,24 @@ $(function (){
                 tooltip.css("display", "none");
         }
         else {
-            var tid = -1, tclosest = 0, smallest = 0;
+            var tid = -1, tclosest = 0, smallest = 0, tt, c, dist, a, pos, size;
             for (var i in tooltips) {
-                var tt = tooltips[i];
-                var c = false;
+                tt = tooltips[i];
+                c = false;
                 if(tt.rad){
                     if(tt.position.distance(x, y) <= tt.a){
                         c = true;
                     }
                 } else {
-                    var a = tt.a, pos=tt.position;
+                    a = tt.a;
+                    pos=tt.position;
                     if((pos.x-a) <= x&&(pos.x+a) >= x&&(pos.y-a) <= y&&(pos.y+a) >= y){
                         c = true;
                     }
                 }
                 if(c){
-                    var dist = tt.position.distance(x, y), size = tt.a;
+                    dist = tt.position.distance(x, y);
+                    size = tt.a;
                     if(!tt.rad)size *= 2;
                     if(tid == -1||dist < tclosest||(dist == tclosest&&size < smallest)){
                         tid = i;
@@ -333,10 +337,10 @@ $(function (){
             if(areadiv.css("display") == "block")areadiv.css("display", "none");
         } else {
             //var area = "Vice City";
-            var area;
+            var area, zone;
             var gamepos = Vector2D(x, y).gamecoords();
             for(var k in mapzones){
-                var zone = mapzones[k];
+                zone = mapzones[k];
                 if(gamepos.inarea(zone.vstart, zone.vend)){
                     area = zone.name;
                     break;
@@ -376,6 +380,7 @@ $(function (){
 
     update();
 });
+
 function showTooltip(tid) {
     var tooltip = $("#drawareatooltip");
     if (tid == -1 || !tooltips[tid]) {
@@ -392,13 +397,15 @@ function showTooltip(tid) {
     tooltip.css("top", pos.y+8);
     tooltip.css("display", "block");
 }
+
 function updateAreaTooltip() {
     var areadiv = $("#zonenametooltip");
     var areaTop = $(window).scrollTop()+$(window).height();
     var canvasBottom = canvas.offsetTop + canvas.height;
     if (areaTop > canvasBottom) areaTop = canvasBottom;
-    areadiv.css("top", areaTop-areadiv.outerHeight());
+        areadiv.css("top", areaTop-areadiv.outerHeight());
 }
+
 function updateTimeTooltip() {
     var timediv = $("#drawtiming");
     var timeTop = $(window).scrollTop()+$(window).height();
@@ -407,6 +414,7 @@ function updateTimeTooltip() {
     timediv.css("top", timeTop-timediv.outerHeight());
     timediv.css('left', canvas.offsetLeft + canvas.width - timediv.outerWidth())
 }
+
 function updateChatBox() {
     var chat = $("#chatbox"),
         plrdiv = $("#players");
@@ -423,6 +431,7 @@ function updateChatBox() {
     chat.css("top", chatTop);
     chat.css("left", chatLeft);
 }
+
 function update() {
     $.getJSON('data.json', redraw);
     window.setTimeout("update()", 2500);
