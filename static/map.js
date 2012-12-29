@@ -7,125 +7,125 @@ var canvas;
 
 function Vector2D(x, y) {
     if (!(this instanceof Vector2D))
-        return new Vector2D(x, y);
-    if (typeof x == "undefined")
-        x = 0;
-    else if (typeof y == "undefined")
-        y = 0;
-    this.x = x;
-    this.y = y;
-    return this;
+		return new Vector2D(x, y);
+	if (typeof x == "undefined")
+		x = 0;
+	else if (typeof y == "undefined")
+		y = 0;
+	this.x = x;
+	this.y = y;
+	return this;
 }
 
 Vector2D.prototype.imgcoords = function() {
-    this.x = Math.round(((this.x*1.023/4+512)*1.5)/2);
-    this.y = Math.round(((-this.y*1.023/4+512)*1.5)/2);
-    return this;
+	this.x = Math.round(((this.x*1.023/4+512)*1.5)/2);
+	this.y = Math.round(((-this.y*1.023/4+512)*1.5)/2);
+	return this;
 }
 
 Vector2D.prototype.gamecoords = function() {
-    this.x = (this.x-384)/384*2048;
-    this.y = -(this.y-384)/384*2048;
-    return this;
+	this.x = (this.x-384)/384*2048;
+	this.y = -(this.y-384)/384*2048;
+	return this;
 }
 
 Vector2D.prototype.distance = function(x, y) {
-    if (x instanceof Vector2D) {
-        y=x.y;
-        x=x.x;
-    }
-    return Math.sqrt(Math.pow(this.x-x, 2)+Math.pow(this.y-y, 2));
+	if (x instanceof Vector2D) {
+		y=x.y;
+		x=x.x;
+	}
+	return Math.sqrt(Math.pow(this.x-x, 2)+Math.pow(this.y-y, 2));
 }
 
 Vector2D.prototype.toString = function() {
-    return "("+this.x+";"+this.y+")";
+	return "("+this.x+";"+this.y+")";
 }
 
 Vector2D.prototype.inarea = function(minpos, maxpos) {
-    return minpos.x <= this.x && minpos.y <= this.y && maxpos.x >= this.x && maxpos.y >= this.y;
+	return minpos.x <= this.x && minpos.y <= this.y && maxpos.x >= this.x && maxpos.y >= this.y;
 }
 
 var Math__round = Math.round;
 Math.round = function(i, p){
-    if (typeof p == "number")
-        return Math__round(i*Math.pow(10, p))*Math.pow(10, -p);
-    else
-        return Math__round(i);
+	if (typeof p == "number")
+		return Math__round(i*Math.pow(10, p))*Math.pow(10, -p);
+	else
+		return Math__round(i);
 }
 
 Vector2D.prototype.dot = function(radius, color) {
-    var vec = this.imgcoords();
-    if (typeof color == "undefined" || !color)
-        color = "red";
-    ctx.fillStyle=color;
-    ctx.strokeStyle="black";
-    ctx.beginPath();
-    ctx.arc(vec.x, vec.y, radius, 0, Math.PI*2, true);
-    ctx.closePath();
-    ctx.fill();
-    ctx.stroke();
+	var vec = this.imgcoords();
+	if (typeof color == "undefined" || !color)
+		color = "red";
+	ctx.fillStyle=color;
+	ctx.strokeStyle="black";
+	ctx.beginPath();
+	ctx.arc(vec.x, vec.y, radius, 0, Math.PI*2, true);
+	ctx.closePath();
+	ctx.fill();
+	ctx.stroke();
 }
 
 Vector2D.prototype.line = function(vece, color) {
-    var vec = this.imgcoords();
-    if (typeof color == "undefined" || !color)
-        color = "red";
-    ctx.strokeStyle=color;
-    ctx.beginPath();
-    ctx.moveTo(vec.x, vec.y);
-    ctx.lineTo(vece.x, vece.y);
-    ctx.closePath();
-    ctx.stroke();
+	var vec = this.imgcoords();
+	if (typeof color == "undefined" || !color)
+		color = "red";
+	ctx.strokeStyle=color;
+	ctx.beginPath();
+	ctx.moveTo(vec.x, vec.y);
+	ctx.lineTo(vece.x, vece.y);
+	ctx.closePath();
+	ctx.stroke();
 }
 
 Vector2D.prototype.polygon = function(a, n, color) {
-    var vec = this.imgcoords();
-    if (typeof color == "undefined" || !color)
-        color = "red";
-    var tangle = Math.PI*2/n;
-    var angle = (tangle+Math.PI)/2
-    var x = a/2/Math.sin(tangle/2);
-    ctx.fillStyle = color;
-    ctx.strokeStyle = "red";
-    ctx.beginPath();
-    ctx.moveTo(Math.cos(angle)*x+vec.x, Math.sin(angle)*x+vec.y);
-    for(var i=1;i<n;i++){
-        angle += tangle;
-        ctx.lineTo(Math.cos(angle)*x+vec.x, Math.sin(angle)*x+vec.y);
-    }
-    ctx.closePath();
-    ctx.fill();
-    ctx.stroke();
+	var vec = this.imgcoords();
+	if (typeof color == "undefined" || !color)
+		color = "red";
+	var tangle = Math.PI*2/n;
+	var angle = (tangle+Math.PI)/2
+	var x = a/2/Math.sin(tangle/2);
+	ctx.fillStyle = color;
+	ctx.strokeStyle = "red";
+	ctx.beginPath();
+	ctx.moveTo(Math.cos(angle)*x+vec.x, Math.sin(angle)*x+vec.y);
+	for(var i=1;i<n;i++){
+		angle += tangle;
+		ctx.lineTo(Math.cos(angle)*x+vec.x, Math.sin(angle)*x+vec.y);
+	}
+	ctx.closePath();
+	ctx.fill();
+	ctx.stroke();
 }
 
 Vector2D.prototype.star = function(a, n, color) {
-    var vec = this.imgcoords();
-    if (typeof color == "undefined" || !color)
-        color = "red";
-    var tangle = Math.PI*4/n;
-    var angle = (tangle/2+Math.PI)/2
-    var x = a/2/Math.sin(tangle/2);
-    ctx.strokeStyle = "red";
-    ctx.fillStyle = color;
-    ctx.beginPath();
-    ctx.moveTo(Math.cos(angle)*x+vec.x, Math.sin(angle)*x+vec.y);
-    for (var i=1;i<n;i++) {
-        angle += tangle;
-        ctx.lineTo(Math.cos(angle)*x+vec.x, Math.sin(angle)*x+vec.y);
-    }
-    ctx.closePath();
-    ctx.stroke();
-    ctx.fill();
+	var vec = this.imgcoords();
+	if (typeof color == "undefined" || !color)
+		color = "red";
+	var tangle = Math.PI*4/n;
+	var angle = (tangle/2+Math.PI)/2
+	var x = a/2/Math.sin(tangle/2);
+	ctx.strokeStyle = "red";
+	ctx.fillStyle = color;
+	ctx.beginPath();
+	ctx.moveTo(Math.cos(angle)*x+vec.x, Math.sin(angle)*x+vec.y);
+	for (var i=1;i<n;i++) {
+		angle += tangle;
+		ctx.lineTo(Math.cos(angle)*x+vec.x, Math.sin(angle)*x+vec.y);
+	}
+	ctx.closePath();
+	ctx.stroke();
+	ctx.fill();
 }
 
 Vector2D.prototype.tooltip = function(a, isradius, text, key) {
-    var vec = this.imgcoords();
-    if (!isradius)
-        a /= 2;
-    if (typeof key != "undefined")
-        tooltips[key] = {position:vec, a:a, rad:isradius, text:text}
-    else
-        tooltips.push({position:vec, a:a, rad:isradius, text:text});
+	var vec = this.imgcoords();
+	if (!isradius)
+		a /= 2;
+	if (typeof key != "undefined")
+		tooltips[key] = {position:vec, a:a, rad:isradius, text:text}
+	else
+		tooltips.push({position:vec, a:a, rad:isradius, text:text});
 }
 
 // Info variables
@@ -141,298 +141,300 @@ var teamcolors = {0:"#778898",1:"#ff8d13",2:"#c715ff",3:"#20b1aa",4:"#ffd720",5:
 var partreasons = {0:"Timed-out",1:"Disconnected",2:"Kicked",3:"Banned",4:"Crashed"}
 
 for (var key in vehiclecolors) { // make string hex codes
-    var colors = vehiclecolors[key];
-    var str = '#';
-    for (var i=0; i<3; i++) {
-        var n = colors[i];
-        if (n < 16) str += '0';
-        str += n.toString(16);
-    }
-    vehiclecolors[key] = str;
+	var colors = vehiclecolors[key];
+	var str = '#';
+	for (var i=0; i<3; i++) {
+		var n = colors[i];
+		if (n < 16) str += '0';
+		str += n.toString(16);
+	}
+	vehiclecolors[key] = str;
 }
 
 var tagsToReplace = {'&': '&amp;','<': '&lt;','>': '&gt;'}
 
 function replaceTag(tag) {
-    return tagsToReplace[tag] || tag;
+	return tagsToReplace[tag] || tag;
 }
 
 function safe_tags_replace(str) {
-    return str.replace(/[&<>]/g, replaceTag);
+	return str.replace(/[&<>]/g, replaceTag);
 }
 
 function colored_name(nick, team) {
-    return "<span style=\"color: " + (teamcolors[team] || teamcolors[255]) + "\">" + safe_tags_replace(nick) + "</span>";
+	return "<span style=\"color: " + (teamcolors[team] || teamcolors[255]) + "\">" + safe_tags_replace(nick) + "</span>";
 }
 
 function redraw(data) {
-    if (typeof data == "undefined" || data.length == 0 || typeof data.players == "undefined")
-        return;
+	if (typeof data == "undefined" || data.length == 0 || typeof data.players == "undefined")
+		return;
 
-    var timestart = new Date().getTime();
+	var timestart = new Date().getTime();
 
-    // Clear the canvas and the tooltip list
-    ctx.clearRect(0, 0, 768, 768);
-    tooltips = [];
+	// Clear the canvas and the tooltip list
+	ctx.clearRect(0, 0, 768, 768);
+	tooltips = [];
 
-    // Draw player blips, list, tooltips
-    var plrdiv = $("#players");
-    if (data.players.length > 0) {
-        var plrstr = "";
-        data.players.sort(function(a,b) {
-            return parseInt(b.score,10) - parseInt(a.score,10);
-        });
+	// Draw player blips, list, tooltips
+	var plrdiv = $("#players");
+	if (data.players.length > 0) {
+		var plrstr = "";
+		data.players.sort(function(a,b) {
+			return parseInt(b.score,10) - parseInt(a.score,10);
+		});
 
-        var playerspecs = [], tmpname;
-        for (var ii in data.players) {
-            if (data.players[ii].spectating == null) continue;
-            tmpname = "<span style=\"color: lightgray\">" + safe_tags_replace(data.players[ii].name) + "</span>";
-            if (!playerspecs[data.players[ii].spectating]) playerspecs[data.players[ii].spectating] = tmpname;
-            else playerspecs[data.players[ii].spectating] += ", " + tmpname;
-        }
-        
-        var plr, str;
-        for (var i in data.players) {
-            plr = data.players[i];
-            if (plr.spectating == null) {
-                Vector2D(plr.pos.x, plr.pos.y).dot(5, (teamcolors[plr.team] || teamcolors[255]));
-                str = "<strong>" + safe_tags_replace(plr.name) + "</strong> <span class=\"red\">[" + plr.id + "]</span>" + (plr.hp > 0 ? " - " + plr.hp + " HP" + (plr.ap > 0 ? " | " + plr.ap + " AP" : "") : "") + "<br />Skin: " + skins[plr.skin];
-                if (plr.vehicle && vehiclemodels[plr.vehicle.model]) {
-                    str += "<br />Vehicle: " + vehiclemodels[plr.vehicle.model] + " <span style=\"color: #000000;font-weight: bold\"><span style=\"background-color: " + vehiclecolors[plr.vehicle.color[0]] + "\">" + plr.vehicle.color[0] + "</span> <span style=\"background-color: " + vehiclecolors[plr.vehicle.color[1]] + "\">" + plr.vehicle.color[1] + "</span></span>";
-                }
-                if (plr.weapon > 0 && weaponmodels[plr.weapon]) {
-                    str += "<br />Weapon: " + weaponmodels[plr.weapon];
-                }
-                if (plr.score > 0 || plr.cash > 0)
-                    str += "<br />Score: " + plr.score + " - Cash: $" + plr.cash;
-                if (playerspecs[plr.id])
-                    str += "<br />Spectators: " + playerspecs[plr.id];
-                Vector2D(plr.pos.x, plr.pos.y).tooltip(5, true, str, plr.id);
-            }
-            plrstr += "<tr><td class=\"id\">" + plr.id + "</td><td>" + colored_name(plr.name, plr.team) + "</td><td class=\"score\">" + plr.score + "</td><td class=\"ping\">" + plr.ping + "</td></tr>";
-        }
-        
-        if (plrstr != "")
-            plrdiv.html("<b>Player list</b><br /><br /><table><thead><tr><th class=\"id\">id</th><th>name</th><th class=\"score\">score</th><th class=\"ping\">ping</th></tr></thead><tbody>" + plrstr + "</tbody></table>").css('display', 'block');
-        else
-            plrdiv.html("").css('display', 'none');
-    }
-    else
-        plrdiv.html("").css('display', 'none');
-    
-    // Draw chatbox
-    var chatdiv = $("#chatbox");
-    if (data.messages.length > 0) {
-        var msgstr = "", msg;
-        for (var i in data.messages) {
-            msg = data.messages[i];
-            switch (msg.type) { // Events
-                case 1: // join
-                    msgstr += "<span class=\"join\">* " + colored_name(msg.name, msg.team) + " joined" + (msg.country ? " from <span class=\"skin\">" + msg.country + "</span>" : "") + ".</span>";
-                    break;
-                case 2: // part
-                    msgstr += "<span class=\"part\">* " + colored_name(msg.name, msg.team) + " left. [" + (partreasons[msg.reason] || "Unknown") + "]</span>";
-                    break;
-                case 3: // spawn
-                    msgstr += "<span class=\"spawn\">* " + colored_name(msg.name, msg.team) + " spawned as <span class=\"skin\">" + skins[msg.skin] + "</span></span>.";
-                    break;
-                case 4: // chat
-                    msgstr += "<span class=\"chat\">" + colored_name(msg.name + ":", msg.team) + " " + safe_tags_replace(msg.msg) + "</span>";
-                    break;
-                case 5: // action
-                    msgstr += "<span class=\"action\">** " + colored_name(msg.name, msg.team) + " " + safe_tags_replace(msg.msg) + "</span>";
-                    break;
-                case 6: // death
-                    msgstr += "<span class=\"kill\">* " + colored_name(msg.name, msg.team) + " died. <span class=\"reason\">(" + (weaponmodels[msg.reason] || "Unknown") + ")</span></span>";
-                    break;
-                case 7: // kill
-                case 8: // teamkill
-                    msgstr += "<span class=\"kill\">* " + colored_name(msg.name, msg.team) + " killed " + colored_name(msg.victim, msg.vteam) + ". <span class=\"reason\">(" + (weaponmodels[msg.reason] || "Unknown") + ")</span> <span class=\"reason\">(" + (bodyparts[msg.bodypart] || "Unknown") + ")</span></span>";
-                    break;
-                case 9: // teamchat
-                    msgstr += "<span class=\"teamchat\">" + colored_name(msg.name + ":", msg.team) + " " + safe_tags_replace(msg.msg) + "</span>";
-                    break;
-            }
-            msgstr += "<br />";
-        }
-        if (msgstr != "")
-            chatdiv.html(msgstr).css('display', 'block');
-        else
-            chatdiv.html("").css('display', 'none');
-    }
-    else
-        chatdiv.html("").css('display', 'none');
+		var playerspecs = [], tmpname;
+		for (var ii in data.players) {
+			if (data.players[ii].spectating == null) continue;
+			tmpname = "<span style=\"color: lightgray\">" + safe_tags_replace(data.players[ii].name) + "</span>";
+			if (!playerspecs[data.players[ii].spectating]) playerspecs[data.players[ii].spectating] = tmpname;
+			else playerspecs[data.players[ii].spectating] += ", " + tmpname;
+		}
+		
+		var plr, str;
+		for (var i in data.players) {
+			plr = data.players[i];
+			if (plr.spectating == null) {
+				Vector2D(plr.pos.x, plr.pos.y).dot(5, (teamcolors[plr.team] || teamcolors[255]));
+				str = "<strong>" + safe_tags_replace(plr.name) + "</strong> <span class=\"red\">[" + plr.id + "]</span>" + (plr.hp > 0 ? " - " + plr.hp + " HP" + (plr.ap > 0 ? " | " + plr.ap + " AP" : "") : "") + "<br />Skin: " + skins[plr.skin];
+				if (plr.vehicle && vehiclemodels[plr.vehicle.model]) {
+					str += "<br />Vehicle: " + vehiclemodels[plr.vehicle.model] + " <span style=\"color: #000000;font-weight: bold\"><span style=\"background-color: " + vehiclecolors[plr.vehicle.color[0]] + "\">" + plr.vehicle.color[0] + "</span> <span style=\"background-color: " + vehiclecolors[plr.vehicle.color[1]] + "\">" + plr.vehicle.color[1] + "</span></span>";
+				}
+				if (plr.weapon > 0 && weaponmodels[plr.weapon]) {
+					str += "<br />Weapon: " + weaponmodels[plr.weapon];
+				}
+				if (plr.score > 0 || plr.cash > 0)
+					str += "<br />Score: " + plr.score + " - Cash: $" + plr.cash;
+				if (playerspecs[plr.id])
+					str += "<br />Spectators: " + playerspecs[plr.id];
+				Vector2D(plr.pos.x, plr.pos.y).tooltip(5, true, str, plr.id);
+			}
+			plrstr += "<tr><td class=\"id\">" + plr.id + "</td><td>" + colored_name(plr.name, plr.team) + "</td><td class=\"score\">" + plr.score + "</td><td class=\"ping\">" + plr.ping + "</td></tr>";
+		}
+		
+		if (plrstr != "")
+			plrdiv.html("<b>Player list</b><br /><br /><table><thead><tr><th class=\"id\">id</th><th>name</th><th class=\"score\">score</th><th class=\"ping\">ping</th></tr></thead><tbody>" + plrstr + "</tbody></table>").css('display', 'block');
+		else
+			plrdiv.html("").css('display', 'none');
+	}
+	else
+		plrdiv.html("").css('display', 'none');
+	
+	// Draw chatbox
+	var chatdiv = $("#chatbox");
+	if (data.messages.length > 0) {
+		var msgstr = "", msg;
+		for (var i in data.messages) {
+			msg = data.messages[i];
+			switch (msg.type) { // Events
+				case 1: // join
+					msgstr += "<span class=\"join\">* " + colored_name(msg.name, msg.team) + " joined" + (msg.country ? " from <span class=\"skin\">" + msg.country + "</span>" : "") + ".</span>";
+					break;
+				case 2: // part
+					msgstr += "<span class=\"part\">* " + colored_name(msg.name, msg.team) + " left. [" + (partreasons[msg.reason] || "Unknown") + "]</span>";
+					break;
+				case 3: // spawn
+					msgstr += "<span class=\"spawn\">* " + colored_name(msg.name, msg.team) + " spawned as <span class=\"skin\">" + skins[msg.skin] + "</span></span>.";
+					break;
+				case 4: // chat
+					msgstr += "<span class=\"chat\">" + colored_name(msg.name + ":", msg.team) + " " + safe_tags_replace(msg.msg) + "</span>";
+					break;
+				case 5: // action
+					msgstr += "<span class=\"action\">** " + colored_name(msg.name, msg.team) + " " + safe_tags_replace(msg.msg) + "</span>";
+					break;
+				case 6: // death
+					msgstr += "<span class=\"kill\">* " + colored_name(msg.name, msg.team) + " died. <span class=\"reason\">(" + (weaponmodels[msg.reason] || "Unknown") + ")</span></span>";
+					break;
+				case 7: // kill
+					msgstr += "<span class=\"kill\">* " + colored_name(msg.name, msg.team) + " killed " + colored_name(msg.victim, msg.vteam) + ". <span class=\"reason\">(" + (weaponmodels[msg.reason] || "Unknown") + ")</span> <span class=\"reason\">(" + (bodyparts[msg.bodypart] || "Unknown") + ")</span></span>";
+					break;
+				case 8: // teamkill
+					msgstr += "<span class=\"kill\">* " + colored_name(msg.name, msg.team) + " team-killed " + colored_name(msg.victim, msg.vteam) + ". <span class=\"reason\">(" + (weaponmodels[msg.reason] || "Unknown") + ")</span> <span class=\"reason\">(" + (bodyparts[msg.bodypart] || "Unknown") + ")</span></span>";
+					break;
+				case 9: // teamchat
+					msgstr += "<span class=\"teamchat\">" + colored_name(msg.name + ":", msg.team) + " " + safe_tags_replace(msg.msg) + "</span>";
+					break;
+			}
+			msgstr += "<br />";
+		}
+		if (msgstr != "")
+			chatdiv.html(msgstr).css('display', 'block');
+		else
+			chatdiv.html("").css('display', 'none');
+	}
+	else
+		chatdiv.html("").css('display', 'none');
 
-    updateChatBox();
+	updateChatBox();
 
-    // Show last active tooltip if it exists
-    showTooltip(activetooltip.id);
-    
-    // Update info tooltip
-    $("#infotooltip").text("Server: " + data.hostname + " | Players: " + data.numplayers + "/" + data.maxplayers);
+	// Show last active tooltip if it exists
+	showTooltip(activetooltip.id);
+	
+	// Update info tooltip
+	$("#infotooltip").text("Server: " + data.hostname + " | Players: " + data.numplayers + "/" + data.maxplayers);
 
-    timestart = new Date().getTime() - timestart;
+	timestart = new Date().getTime() - timestart;
 
-    // Update timing tooltip
-    $("#drawtiming").html("Time: <strong>" + (data.hour <= 9 ? "0" : "") + data.hour + ":" + (data.minute <= 9 ? "0" : "") + data.minute + "</strong><br />" + (weathers[data.weather] ? "Weather: <strong>" + weathers[data.weather] + "</strong><br />" : "") + "Rendered in <strong>"+timestart+"</strong> ms.").css('display', 'block');
-    updateTimeTooltip();
+	// Update timing tooltip
+	$("#drawtiming").html("Time: <strong>" + (data.hour <= 9 ? "0" : "") + data.hour + ":" + (data.minute <= 9 ? "0" : "") + data.minute + "</strong><br />" + (weathers[data.weather] ? "Weather: <strong>" + weathers[data.weather] + "</strong><br />" : "") + "Rendered in <strong>"+timestart+"</strong> ms.").css('display', 'block');
+	updateTimeTooltip();
 }
 
 $(function (){
-    canvas = $("#drawarea")[0];
-    var tooltip = $("#drawareatooltip");
-    var areadiv = $("#zonenametooltip");
-    var infotip = $("#infotooltip");
-    $("#chatbox").css("display", "block").text("Waiting for data...");
-    ctx = canvas.getContext("2d");
-    infotip.css("display", "block");
-    infotip.text("Waiting for data...");
+	canvas = $("#drawarea")[0];
+	var tooltip = $("#drawareatooltip");
+	var areadiv = $("#zonenametooltip");
+	var infotip = $("#infotooltip");
+	$("#chatbox").css("display", "block").text("Waiting for data...");
+	ctx = canvas.getContext("2d");
+	infotip.css("display", "block");
+	infotip.text("Waiting for data...");
 
-    $('#drawarea').click(function (e) {
-        if(tooltip.css("display") == "block") disablemovecheck = !disablemovecheck;
-    });
+	$('#drawarea').click(function (e) {
+		if(tooltip.css("display") == "block") disablemovecheck = !disablemovecheck;
+	});
 
-    $(window).mousemove(function (e) {
-        if (disablemovecheck) return;
-        var x = e.pageX-canvas.offsetLeft,
-            y = e.pageY-canvas.offsetTop;
-        if (x < 0 || y < 0 || x >= canvas.width || y >=canvas.height) {
-            if (tooltip.css("display") == "block")
-                tooltip.css("display", "none");
-        }
-        else {
-            var tid = -1, tclosest = 0, smallest = 0, tt, c, dist, a, pos, size;
-            for (var i in tooltips) {
-                tt = tooltips[i];
-                c = false;
-                if(tt.rad){
-                    if(tt.position.distance(x, y) <= tt.a){
-                        c = true;
-                    }
-                } else {
-                    a = tt.a;
-                    pos=tt.position;
-                    if((pos.x-a) <= x&&(pos.x+a) >= x&&(pos.y-a) <= y&&(pos.y+a) >= y){
-                        c = true;
-                    }
-                }
-                if(c){
-                    dist = tt.position.distance(x, y);
-                    size = tt.a;
-                    if(!tt.rad)size *= 2;
-                    if(tid == -1||dist < tclosest||(dist == tclosest&&size < smallest)){
-                        tid = i;
-                        tclosest = dist;
-                        smallest = size;
-                    }
-                }
-            }
-            showTooltip(tid);
-        }
-    });
+	$(window).mousemove(function (e) {
+		if (disablemovecheck) return;
+		var x = e.pageX-canvas.offsetLeft,
+			y = e.pageY-canvas.offsetTop;
+		if (x < 0 || y < 0 || x >= canvas.width || y >=canvas.height) {
+			if (tooltip.css("display") == "block")
+				tooltip.css("display", "none");
+		}
+		else {
+			var tid = -1, tclosest = 0, smallest = 0, tt, c, dist, a, pos, size;
+			for (var i in tooltips) {
+				tt = tooltips[i];
+				c = false;
+				if(tt.rad){
+					if(tt.position.distance(x, y) <= tt.a){
+						c = true;
+					}
+				} else {
+					a = tt.a;
+					pos=tt.position;
+					if((pos.x-a) <= x&&(pos.x+a) >= x&&(pos.y-a) <= y&&(pos.y+a) >= y){
+						c = true;
+					}
+				}
+				if(c){
+					dist = tt.position.distance(x, y);
+					size = tt.a;
+					if(!tt.rad)size *= 2;
+					if(tid == -1||dist < tclosest||(dist == tclosest&&size < smallest)){
+						tid = i;
+						tclosest = dist;
+						smallest = size;
+					}
+				}
+			}
+			showTooltip(tid);
+		}
+	});
 
-    $(window).mousemove(function (e) {
-        var x=e.pageX-canvas.offsetLeft, y=e.pageY-canvas.offsetTop;
-        if(x < 0||y < 0||x >= canvas.width||y >=canvas.height){
-            if(areadiv.css("display") == "block")areadiv.css("display", "none");
-        } else {
-            //var area = "Vice City";
-            var area, zone;
-            var gamepos = Vector2D(x, y).gamecoords();
-            for(var k in mapzones){
-                zone = mapzones[k];
-                if(gamepos.inarea(zone.vstart, zone.vend)){
-                    area = zone.name;
-                    break;
-                }
-            }
-            if (!area) {
-                areadiv.css("display", "none");
-            }
-            else {
-                areadiv.text(area);
-                areadiv.css("display", "block");
-                updateAreaTooltip();
-            }
-        }
-    });
+	$(window).mousemove(function (e) {
+		var x=e.pageX-canvas.offsetLeft, y=e.pageY-canvas.offsetTop;
+		if(x < 0||y < 0||x >= canvas.width||y >=canvas.height){
+			if(areadiv.css("display") == "block")areadiv.css("display", "none");
+		} else {
+			//var area = "Vice City";
+			var area, zone;
+			var gamepos = Vector2D(x, y).gamecoords();
+			for(var k in mapzones){
+				zone = mapzones[k];
+				if(gamepos.inarea(zone.vstart, zone.vend)){
+					area = zone.name;
+					break;
+				}
+			}
+			if (!area) {
+				areadiv.css("display", "none");
+			}
+			else {
+				areadiv.text(area);
+				areadiv.css("display", "block");
+				updateAreaTooltip();
+			}
+		}
+	});
 
-    $(window).bind('mouseout', function () {
-        if(disablemovecheck)return;
-        if(tooltip.css("display") == "block")tooltip.css("display", "none");
-        if(areadiv.css("display") == "block")areadiv.css("display", "none");
-    });
+	$(window).bind('mouseout', function () {
+		if(disablemovecheck)return;
+		if(tooltip.css("display") == "block")tooltip.css("display", "none");
+		if(areadiv.css("display") == "block")areadiv.css("display", "none");
+	});
 
-    $(window).bind('scroll', function (e) {
-        updateAreaTooltip();
-        updateTimeTooltip();
-        updateChatBox();
-        if (disablemovecheck) return;
-        if (tooltip.css("display") == "block") tooltip.css("display", "none");
-        
-    });
+	$(window).bind('scroll', function (e) {
+		updateAreaTooltip();
+		updateTimeTooltip();
+		updateChatBox();
+		if (disablemovecheck) return;
+		if (tooltip.css("display") == "block") tooltip.css("display", "none");
+		
+	});
 
-    $(window).bind('resize', function (e) {
-        updateAreaTooltip();
-        updateTimeTooltip();
-        updateChatBox();
-    });
+	$(window).bind('resize', function (e) {
+		updateAreaTooltip();
+		updateTimeTooltip();
+		updateChatBox();
+	});
 
-    update();
+	update();
 });
 
 function showTooltip(tid) {
-    var tooltip = $("#drawareatooltip");
-    if (tid == -1 || !tooltips[tid]) {
-        if (disablemovecheck == true) disablemovecheck = false;
-        activetooltip = {id:-1,pos:null}
-        tooltip.css("display", "none");
-        return;
-    }
-    var pos = tooltips[tid].position;
-    activetooltip.id = tid;
-    activetooltip.pos = pos;
-    tooltip.html(tooltips[tid].text);
-    tooltip.css("left", pos.x+8);
-    tooltip.css("top", pos.y+8);
-    tooltip.css("display", "block");
+	var tooltip = $("#drawareatooltip");
+	if (tid == -1 || !tooltips[tid]) {
+		if (disablemovecheck == true) disablemovecheck = false;
+		activetooltip = {id:-1,pos:null}
+		tooltip.css("display", "none");
+		return;
+	}
+	var pos = tooltips[tid].position;
+	activetooltip.id = tid;
+	activetooltip.pos = pos;
+	tooltip.html(tooltips[tid].text);
+	tooltip.css("left", pos.x+8);
+	tooltip.css("top", pos.y+8);
+	tooltip.css("display", "block");
 }
 
 function updateAreaTooltip() {
-    var areadiv = $("#zonenametooltip");
-    var areaTop = $(window).scrollTop()+$(window).height();
-    var canvasBottom = canvas.offsetTop + canvas.height;
-    if (areaTop > canvasBottom) areaTop = canvasBottom;
-        areadiv.css("top", areaTop-areadiv.outerHeight());
+	var areadiv = $("#zonenametooltip");
+	var areaTop = $(window).scrollTop()+$(window).height();
+	var canvasBottom = canvas.offsetTop + canvas.height;
+	if (areaTop > canvasBottom) areaTop = canvasBottom;
+		areadiv.css("top", areaTop-areadiv.outerHeight());
 }
 
 function updateTimeTooltip() {
-    var timediv = $("#drawtiming");
-    var timeTop = $(window).scrollTop()+$(window).height();
-    var canvasBottom = canvas.offsetTop + canvas.height;
-    if (timeTop > canvasBottom) timeTop = canvasBottom;
-    timediv.css("top", timeTop-timediv.outerHeight());
-    timediv.css('left', canvas.offsetLeft + canvas.width - timediv.outerWidth())
+	var timediv = $("#drawtiming");
+	var timeTop = $(window).scrollTop()+$(window).height();
+	var canvasBottom = canvas.offsetTop + canvas.height;
+	if (timeTop > canvasBottom) timeTop = canvasBottom;
+	timediv.css("top", timeTop-timediv.outerHeight());
+	timediv.css('left', canvas.offsetLeft + canvas.width - timediv.outerWidth())
 }
 
 function updateChatBox() {
-    var chat = $("#chatbox"),
-        plrdiv = $("#players");
-    var chatLeft = $(window).scrollLeft()+$(window).width() - chat.outerWidth(),
-        plrLeft = $(window).scrollLeft()+$(window).width() - plrdiv.outerWidth();
-    var canvasLeft = canvas.offsetLeft + canvas.width;
-    if (plrLeft < canvasLeft) plrLeft = canvasLeft;
-    plrdiv.css('top', $(window).scrollTop());
-    plrdiv.css('left', plrLeft);
-    var plrBottom = $(window).scrollTop() + plrdiv.outerHeight(),
-        chatTop = $(window).scrollTop()+$(window).height() - chat.outerHeight();
-    if (chatTop < plrBottom) chatTop = plrBottom;
-    if (chatLeft < canvasLeft) chatLeft = canvasLeft;
-    chat.css("top", chatTop);
-    chat.css("left", chatLeft);
+	var chat = $("#chatbox"),
+		plrdiv = $("#players");
+	var chatLeft = $(window).scrollLeft()+$(window).width() - chat.outerWidth(),
+		plrLeft = $(window).scrollLeft()+$(window).width() - plrdiv.outerWidth();
+	var canvasLeft = canvas.offsetLeft + canvas.width;
+	if (plrLeft < canvasLeft) plrLeft = canvasLeft;
+	plrdiv.css('top', $(window).scrollTop());
+	plrdiv.css('left', plrLeft);
+	var plrBottom = $(window).scrollTop() + plrdiv.outerHeight(),
+		chatTop = $(window).scrollTop()+$(window).height() - chat.outerHeight();
+	if (chatTop < plrBottom) chatTop = plrBottom;
+	if (chatLeft < canvasLeft) chatLeft = canvasLeft;
+	chat.css("top", chatTop);
+	chat.css("left", chatLeft);
 }
 
 function update() {
-    $.getJSON('data.json', redraw);
-    window.setTimeout("update()", updaterate);
+	$.getJSON('data.json', redraw);
+	window.setTimeout("update()", updaterate);
 }
