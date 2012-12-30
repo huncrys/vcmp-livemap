@@ -264,7 +264,7 @@ function redraw(data) {
                     msgstr += "<span class=\"kill\">* " + colored_name(msg.name, msg.team) + " team-killed " + colored_name(msg.victim, msg.vteam) + ". <span class=\"reason\">(" + (weaponmodels[msg.reason] || "Unknown") + ")</span> <span class=\"reason\">(" + (bodyparts[msg.bodypart] || "Unknown") + ")</span></span>";
                     break;
                 case 9: // teamchat
-                    msgstr += "<span class=\"teamchat\">" + colored_name(msg.name + ":", msg.team) + " " + safe_tags_replace(msg.msg) + "</span>";
+                    msgstr += "<span class=\"teamchat\">" + colored_name(msg.name, msg.team) + ": " + safe_tags_replace(msg.msg) + "</span>";
                     break;
             }
             msgstr += "<br />";
