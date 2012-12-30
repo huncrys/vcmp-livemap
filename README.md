@@ -1,14 +1,17 @@
-vcmp-livemap
+Live Map for Vice City Multiplayer
 ============
 
-Web-based Live Map for Vice City Multiplayer
-
 The map uses the ``data.json`` file in its web directory, which you have to update from the server, by default every 5 seconds.
-You can use online services that can parse or validate your JSON data if it is correct. You can visit them there:
-http://jsonlint.com/
-http://json.parser.online.fr/
 
-Example for ``data.json``:
+You can use online services that can parse or validate your JSON data if it is correct. You can find them at the following URLs:
+* http://jsonlint.com
+* http://json.parser.online.fr
+
+__Usage examples__:
+* http://cheese.crys.hu/livemap - always the latest version
+* http://ea.vrocker-hosting.co.uk/livemap
+
+__Example for ``data.json``:__
 ````json
 {
     "hostname": "Server name",
@@ -60,29 +63,74 @@ Example for ``data.json``:
         }
     ],
     "messages": [
+        // join
         {
             "name": "Player name",
             "team": 255,
             "country": "Country name",
             "type": 1
         },
+        // part
         {
             "name": "Player name",
             "team": 13,
             "reason": 0,
             "type": 2
         },
+        // spawn
         {
             "name": "Player name",
             "team": 13,
             "skin": 1,
             "type": 3
         },
+        // chat
         {
             "name": "Player name",
             "team": 255,
-            "msg": "te ves lentisimo",
+            "msg": "Message text",
             "type": 4
+        },
+        // action
+        {
+            "name": "Player name",
+            "team": 255,
+            "msg": "Action text",
+            "type": 5
+        },
+        // death
+        {
+            "name": "Player name",
+            "team": 255,
+            "reason": 43,
+            "type": 6
+        },
+        // kill
+        {
+            "name": "Killer name",
+            "team": 255,
+            "victim": "Victim name",
+            "vteam": 13,
+            "reason": 15,
+            "bodypart": 2,
+            "type": 7
+        },
+        // teamkill
+        {
+            "name": "Killer name",
+            "team": 13,
+            "victim": "Victim name",
+            "vteam": 13,
+            "reason": 15,
+            "bodypart": 2,
+            "type": 8
+        },
+        // teamchat
+        {
+            "name": "Player name",
+            "team": 255,
+            "msg": "Message text",
+            "type": 9
         }
     ]
 }
