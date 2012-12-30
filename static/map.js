@@ -249,7 +249,7 @@ function redraw(data) {
                     msgstr += "<span class=\"spawn\">* " + colored_name(msg.name, msg.team) + " spawned as <span class=\"skin\">" + skins[msg.skin] + "</span></span>.";
                     break;
                 case 4: // chat
-                    msgstr += "<span class=\"chat\">" + colored_name(msg.name + ":", msg.team) + " " + safe_tags_replace(msg.msg) + "</span>";
+                    msgstr += "<span class=\"chat\">" + colored_name(msg.name, msg.team) + ": " + safe_tags_replace(msg.msg) + "</span>";
                     break;
                 case 5: // action
                     msgstr += "<span class=\"action\">** " + colored_name(msg.name, msg.team) + " " + safe_tags_replace(msg.msg) + "</span>";
