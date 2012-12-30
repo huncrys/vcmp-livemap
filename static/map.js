@@ -188,7 +188,7 @@ function redraw(data) {
 
     // Draw player blips, list, tooltips
     if (data.players.length > 0) {
-        var plrstr = "", plr, str, playerspecs = [], tmpname;
+        var plrstr = "", plr, str, playerspecs = [], tmpname, zone;
 
         data.players.sort(function(a,b) {
             return b.score - a.score;
