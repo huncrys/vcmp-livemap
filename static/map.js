@@ -199,8 +199,7 @@ function redraw(data) {
 
         for (var i in data.players) {
             plr = data.players[i];
-            if (plr.spectating == null) {
-                Vector2D(plr.pos.x, plr.pos.y).dot(5, (teamcolors[plr.team] || teamcolors[255]));
+            if (plr.spectating == null && plr.pos.x && plr.pos.y) {
                 str = "<strong>" + safe_tags_replace(plr.name) + "</strong> <span class=\"red\">[" + plr.id + "]</span>" + (plr.hp > 0 ? " - " + plr.hp + " HP" + (plr.ap > 0 ? " | " + plr.ap + " AP" : "") : "") + "<br />Skin: " + skins[plr.skin];
                 if (plr.vehicle && vehiclemodels[plr.vehicle.model]) {
                     str += "<br />Vehicle: " + vehiclemodels[plr.vehicle.model] + " <span style=\"color: #000000;font-weight: bold\"><span style=\"background-color: " + vehiclecolors[plr.vehicle.color[0]] + "\">" + plr.vehicle.color[0] + "</span> <span style=\"background-color: " + vehiclecolors[plr.vehicle.color[1]] + "\">" + plr.vehicle.color[1] + "</span></span>";
@@ -220,6 +219,7 @@ function redraw(data) {
                         break;
                     }
                 }
+                Vector2D(plr.pos.x, plr.pos.y).dot(5, (teamcolors[plr.team] || teamcolors[255]));
                 Vector2D(plr.pos.x, plr.pos.y).tooltip(5, true, str, plr.id);
             }
             plrstr += "<tr><td class=\"id\">" + plr.id + "</td><td>" + colored_name(plr.name, plr.team) + "</td><td class=\"score\">" + plr.score + "</td><td class=\"ping\">" + plr.ping + "</td></tr>";
