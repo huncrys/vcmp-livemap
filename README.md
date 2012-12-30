@@ -60,29 +60,74 @@ Example for ``data.json``:
         }
     ],
     "messages": [
+        // join
         {
             "name": "Player name",
             "team": 255,
             "country": "Country name",
             "type": 1
         },
+        // part
         {
             "name": "Player name",
             "team": 13,
             "reason": 0,
             "type": 2
         },
+        // spawn
         {
             "name": "Player name",
             "team": 13,
             "skin": 1,
             "type": 3
         },
+        // chat
         {
             "name": "Player name",
             "team": 255,
-            "msg": "te ves lentisimo",
+            "msg": "Message text",
             "type": 4
+        },
+        // action
+        {
+            "name": "Player name",
+            "team": 255,
+            "msg": "Action text",
+            "type": 5
+        },
+        // death
+        {
+            "name": "Player name",
+            "team": 255,
+            "reason": 43,
+            "type": 6
+        },
+        // kill
+        {
+            "name": "Killer name",
+            "team": 255,
+            "victim": "Victim name",
+            "vteam": 13,
+            "reason": 15,
+            "bodypart": 2,
+            "type": 7
+        },
+        // teamkill
+        {
+            "name": "Killer name",
+            "team": 13,
+            "victim": "Victim name",
+            "vteam": 13,
+            "reason": 15,
+            "bodypart": 2,
+            "type": 8
+        },
+        // teamchat
+        {
+            "name": "Player name",
+            "team": 255,
+            "msg": "Message text",
+            "type": 9
         }
     ]
 }
