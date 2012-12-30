@@ -73,15 +73,18 @@ Vector2D.prototype.dot = function(radius, color) {
     ctx.stroke();
 }
 
-Vector2D.prototype.line = function(vece, color) {
+Vector2D.prototype.line = function(vece, color, width) {
     var vec = this.imgcoords();
     if (typeof color == "undefined" || !color)
         color = "red";
+    if (typeof width == "undefined" || !width)
+        width = 3;
     ctx.strokeStyle=color;
     ctx.beginPath();
     ctx.moveTo(vec.x, vec.y);
     ctx.lineTo(vece.x, vece.y);
     ctx.closePath();
+    ctx.lineWidth = width;
     ctx.stroke();
 }
 
