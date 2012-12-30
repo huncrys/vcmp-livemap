@@ -34,8 +34,8 @@ __Example for ``data.json``:__
             "weapon": 0,
             "vehicle": null,
             "pos": {
-                "y": 941.733,
-                "x": -672.98
+                "x": -672.98,
+                "y": 941.733
             },
             "spectating": null
         },
@@ -56,8 +56,8 @@ __Example for ``data.json``:__
                 "health": 1000
             },
             "pos": {
-                "y": 941.733,
-                "x": -672.98
+                "x": -672.98,
+                "y": 941.733
             },
             "spectating": 0
         }
