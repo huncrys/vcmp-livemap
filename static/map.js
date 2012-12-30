@@ -1,9 +1,16 @@
 // Global variables
-var ctx;
-var tooltips = [];
-var activetooltip = {id:-1,pos:null}
-var disablemovecheck = false;
-var canvas;
+var ctx,
+    tooltips = [],
+    activetooltip = {id:-1,pos:null},
+    disablemovecheck = false,
+    chatbox,
+    playerlist,
+    areatip,
+    infotip,
+    timetip,
+    tooltip,
+    canvasRight,
+    canvasBottom;
 
 function Vector2D(x, y) {
     if (!(this instanceof Vector2D))
@@ -176,22 +183,20 @@ function redraw(data) {
     tooltips = [];
 
     // Draw player blips, list, tooltips
-    var plrdiv = $("#players");
     if (data.players.length > 0) {
-        var plrstr = "";
+        var plrstr = "", plr, str, playerspecs = [], tmpname;
+
         data.players.sort(function(a,b) {
-            return parseInt(b.score,10) - parseInt(a.score,10);
+            return b.score - a.score;
         });
 
-        var playerspecs = [], tmpname;
-        for (var ii in data.players) {
-            if (data.players[ii].spectating == null) continue;
-            tmpname = "<span style=\"color: lightgray\">" + safe_tags_replace(data.players[ii].name) + "</span>";
-            if (!playerspecs[data.players[ii].spectating]) playerspecs[data.players[ii].spectating] = tmpname;
-            else playerspecs[data.players[ii].spectating] += ", " + tmpname;
+        for (var i in data.players) {
+            if (data.players[i].spectating == null) continue;
+            tmpname = "<span style=\"color: lightgray\">" + safe_tags_replace(data.players[i].name) + "</span>";
+            if (!playerspecs[data.players[i].spectating]) playerspecs[data.players[i].spectating] = tmpname;
+            else playerspecs[data.players[i].spectating] += ", " + tmpname;
         }
-        
-        var plr, str;
+
         for (var i in data.players) {
             plr = data.players[i];
             if (plr.spectating == null) {
@@ -221,15 +226,14 @@ function redraw(data) {
         }
         
         if (plrstr != "")
-            plrdiv.html("<b>Player list</b><br /><br /><table><thead><tr><th class=\"id\">id</th><th>name</th><th class=\"score\">score</th><th class=\"ping\">ping</th></tr></thead><tbody>" + plrstr + "</tbody></table>").css('display', 'block');
+            playerlist.html("<b>Player list</b><br /><br /><table><thead><tr><th class=\"id\">id</th><th>name</th><th class=\"score\">score</th><th class=\"ping\">ping</th></tr></thead><tbody>" + plrstr + "</tbody></table>").css('display', 'block');
         else
-            plrdiv.html("").css('display', 'none');
+            playerlist.html("").css('display', 'none');
     }
     else
-        plrdiv.html("").css('display', 'none');
+        playerlist.html("").css('display', 'none');
     
     // Draw chatbox
-    var chatdiv = $("#chatbox");
     if (data.messages.length > 0) {
         var msgstr = "", msg;
         for (var i in data.messages) {
@@ -266,37 +270,44 @@ function redraw(data) {
             msgstr += "<br />";
         }
         if (msgstr != "")
-            chatdiv.html(msgstr).css('display', 'block');
+            chatbox.html(msgstr).css('display', 'block');
         else
-            chatdiv.html("").css('display', 'none');
+            chatbox.html("").css('display', 'none');
     }
     else
-        chatdiv.html("").css('display', 'none');
+        chatbox.html("").css('display', 'none');
 
-    updateChatBox();
+    updatePC();
 
     // Show last active tooltip if it exists
     showTooltip(activetooltip.id);
     
     // Update info tooltip
-    $("#infotooltip").text("Server: " + data.hostname + " | Players: " + data.numplayers + "/" + data.maxplayers);
+    infotip.text("Server: " + data.hostname + " | Players: " + data.numplayers + "/" + data.maxplayers);
 
     timestart = new Date().getTime() - timestart;
 
     // Update timing tooltip
-    $("#drawtiming").html("Time: <strong>" + (data.hour <= 9 ? "0" : "") + data.hour + ":" + (data.minute <= 9 ? "0" : "") + data.minute + "</strong><br />" + (weathers[data.weather] ? "Weather: <strong>" + weathers[data.weather] + "</strong><br />" : "") + "Rendered in <strong>"+timestart+"</strong> ms.").css('display', 'block');
+    timetip.html("Time: <strong>" + (data.hour <= 9 ? "0" : "") + data.hour + ":" + (data.minute <= 9 ? "0" : "") + data.minute + "</strong><br />" + (weathers[data.weather] ? "Weather: <strong>" + weathers[data.weather] + "</strong><br />" : "") + "Rendered in <strong>"+timestart+"</strong> ms.").css('display', 'block');
     updateTimeTooltip();
 }
 
 $(function (){
     canvas = $("#drawarea")[0];
-    var tooltip = $("#drawareatooltip");
-    var areadiv = $("#zonenametooltip");
-    var infotip = $("#infotooltip");
+    tooltip = $("#drawareatooltip");
+    areatip = $("#zonenametooltip");
+    infotip = $("#infotooltip");
+    timetip = $("#drawtiming");
+    playerlist = $("#players");
+    chatbox = $("#chatbox");
     $("#chatbox").css("display", "block").text("Waiting for data...");
     ctx = canvas.getContext("2d");
     infotip.css("display", "block");
     infotip.text("Waiting for data...");
+    
+    // Setting canvas info for future use in playerlist/chatbox
+    canvasBottom = canvas.offsetTop + canvas.height;
+    canvasRight = canvas.offsetLeft + canvas.width;
 
     $('#drawarea').click(function (e) {
         if(tooltip.css("display") == "block") disablemovecheck = !disablemovecheck;
@@ -344,7 +355,7 @@ $(function (){
     $(window).mousemove(function (e) {
         var x=e.pageX-canvas.offsetLeft, y=e.pageY-canvas.offsetTop;
         if(x < 0||y < 0||x >= canvas.width||y >=canvas.height){
-            if(areadiv.css("display") == "block")areadiv.css("display", "none");
+            if(areatip.css("display") == "block") areatip.css("display", "none");
         } else {
             //var area = "Vice City";
             var area, zone;
@@ -357,11 +368,11 @@ $(function (){
                 }
             }
             if (!area) {
-                areadiv.css("display", "none");
+                areatip.css("display", "none");
             }
             else {
-                areadiv.text(area);
-                areadiv.css("display", "block");
+                areatip.text(area);
+                areatip.css("display", "block");
                 updateAreaTooltip();
             }
         }
@@ -370,13 +381,13 @@ $(function (){
     $(window).bind('mouseout', function () {
         if(disablemovecheck)return;
         if(tooltip.css("display") == "block")tooltip.css("display", "none");
-        if(areadiv.css("display") == "block")areadiv.css("display", "none");
+        if(areatip.css("display") == "block")areatip.css("display", "none");
     });
 
     $(window).bind('scroll', function (e) {
         updateAreaTooltip();
         updateTimeTooltip();
-        updateChatBox();
+        updatePC();
         if (disablemovecheck) return;
         if (tooltip.css("display") == "block") tooltip.css("display", "none");
         
@@ -385,14 +396,13 @@ $(function (){
     $(window).bind('resize', function (e) {
         updateAreaTooltip();
         updateTimeTooltip();
-        updateChatBox();
+        updatePC();
     });
 
     update();
 });
 
 function showTooltip(tid) {
-    var tooltip = $("#drawareatooltip");
     if (tid == -1 || !tooltips[tid]) {
         if (disablemovecheck == true) disablemovecheck = false;
         activetooltip = {id:-1,pos:null}
@@ -409,40 +419,28 @@ function showTooltip(tid) {
 }
 
 function updateAreaTooltip() {
-    var areadiv = $("#zonenametooltip");
     var areaTop = $(window).scrollTop()+$(window).height();
-    var canvasBottom = canvas.offsetTop + canvas.height;
-    if (areaTop > canvasBottom) areaTop = canvasBottom;
-        areadiv.css("top", areaTop-areadiv.outerHeight());
+    areatip.css("top", (areaTop > canvasBottom ? canvasBottom : areaTop)-areatip.outerHeight());
 }
 
 function updateTimeTooltip() {
-    var timediv = $("#drawtiming");
     var timeTop = $(window).scrollTop()+$(window).height();
-    var canvasBottom = canvas.offsetTop + canvas.height;
-    if (timeTop > canvasBottom) timeTop = canvasBottom;
-    timediv.css("top", timeTop-timediv.outerHeight());
-    timediv.css('left', canvas.offsetLeft + canvas.width - timediv.outerWidth())
+    timetip.css("top", (timeTop > canvasBottom ? canvasBottom : timeTop)-timetip.outerHeight());
+    timetip.css('left', canvas.offsetLeft + canvas.width - timetip.outerWidth())
 }
 
-function updateChatBox() {
-    var chat = $("#chatbox"),
-        plrdiv = $("#players");
-    var chatLeft = $(window).scrollLeft()+$(window).width() - chat.outerWidth(),
-        plrLeft = $(window).scrollLeft()+$(window).width() - plrdiv.outerWidth();
-    var canvasLeft = canvas.offsetLeft + canvas.width;
-    if (plrLeft < canvasLeft) plrLeft = canvasLeft;
-    plrdiv.css('top', $(window).scrollTop());
-    plrdiv.css('left', plrLeft);
-    var plrBottom = $(window).scrollTop() + plrdiv.outerHeight(),
-        chatTop = $(window).scrollTop()+$(window).height() - chat.outerHeight();
-    if (chatTop < plrBottom) chatTop = plrBottom;
-    if (chatLeft < canvasLeft) chatLeft = canvasLeft;
-    chat.css("top", chatTop);
-    chat.css("left", chatLeft);
+function updatePC() {
+    var chatTop = $(window).scrollTop()+$(window).height() - chatbox.outerHeight(),
+        chatLeft = $(window).scrollLeft()+$(window).width() - chatbox.outerWidth(),
+        plrLeft = $(window).scrollLeft()+$(window).width() - playerlist.outerWidth(),
+        plrBottom = $(window).scrollTop() + playerlist.outerHeight();
+    playerlist.css('top', $(window).scrollTop());
+    playerlist.css('left', (plrLeft < canvasRight ? canvasRight : plrLeft));
+    chatbox.css("top", (chatTop < plrBottom ? plrBottom : chatTop));
+    chatbox.css("left", (chatLeft < canvasRight ? canvasRight : chatLeft));
 }
 
 function update() {
     $.getJSON('data.json', redraw);
-    window.setTimeout("update()", updaterate);
+    window.setTimeout("update()", config.updaterate);
 }
