@@ -304,7 +304,7 @@ $(function (){
     timetip = $("#drawtiming");
     playerlist = $("#players");
     chatbox = $("#chatbox");
-    $("#chatbox").css("display", "block").text("Waiting for data...");
+    chatbox.css("display", "block").text("Waiting for data...");
     ctx = canvas.getContext("2d");
     infotip.css("display", "block");
     infotip.text("Waiting for data...");
