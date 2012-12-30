@@ -75,6 +75,7 @@ Vector2D.prototype.dot = function(radius, color) {
 
 Vector2D.prototype.line = function(vece, color, width) {
     var vec = this.imgcoords();
+    vece = Vector2D(vece.x, vece.y).imgcoords();
     if (typeof color == "undefined" || !color)
         color = "red";
     if (typeof width == "undefined" || !width)
