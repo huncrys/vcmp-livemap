@@ -25,8 +25,8 @@ function Vector2D(x, y) {
 }
 
 Vector2D.prototype.imgcoords = function() {
-    this.x = Math.round(((this.x*1.023/4+512)*1.5)/2);
-    this.y = Math.round(((-this.y*1.023/4+512)*1.5)/2);
+    this.x = Math.round((this.x*1.023/4+512)*0.75);
+    this.y = Math.round((-this.y*1.023/4+512)*0.75);
     return this;
 }
 
