@@ -34,8 +34,8 @@ Vector2D.prototype.gamecoords = function() {
 
 Vector2D.prototype.distance = function(x, y) {
     if (x instanceof Vector2D) {
-        y=x.y;
         x=x.x;
+        y=x.y;
     }
     return Math.sqrt(Math.pow(this.x-x, 2)+Math.pow(this.y-y, 2));
 }
@@ -82,7 +82,7 @@ Vector2D.prototype.polygon = function(a, n, color) {
     if (typeof color == "undefined" || !color)
         color = "red";
     var tangle = Math.PI*2/n;
-    var angle = (tangle+Math.PI)/2
+    var angle = (tangle+Math.PI)/2;
     var x = a/2/Math.sin(tangle/2);
     ctx.fillStyle = color;
     ctx.strokeStyle = "red";
@@ -102,7 +102,7 @@ Vector2D.prototype.star = function(a, n, color) {
     if (typeof color == "undefined" || !color)
         color = "red";
     var tangle = Math.PI*4/n;
-    var angle = (tangle/2+Math.PI)/2
+    var angle = (tangle/2+Math.PI)/2;
     var x = a/2/Math.sin(tangle/2);
     ctx.strokeStyle = "red";
     ctx.fillStyle = color;
@@ -118,8 +118,8 @@ Vector2D.prototype.star = function(a, n, color) {
 }
 
 Vector2D.prototype.rect = function(vece, color) {
-    var vec = this.imgcoords(),
-        vece = vece.imgcoords();
+    var vec = this.imgcoords();
+    vece = vece.imgcoords();
     if (typeof color == "undefined" || !color)
         color = "rgba(0, 255, 255, 0.5)";
     ctx.fillStyle = color;
@@ -160,14 +160,15 @@ var vehiclecolors = {0:[5,5,5],1:[245,245,245],2:[42,119,161],3:[132,4,16],4:[38
 var teamcolors = {0:"#778898",1:"#ff8d13",2:"#c715ff",3:"#20b1aa",4:"#ffd720",5:"#dc143b",6:"#6395ec",7:"#ff1494",8:"#f4a361",9:"#ee82ef",10:"#8b4512",11:"#f0e78c",12:"#148a8a",13:"#14ff7f",14:"#566b30",15:"#191971",16:"#ffffff",255:"#ffffff"}
 var partreasons = {0:"Timeout",1:"Quit",2:"Kicked",3:"Banned",4:"Crashed"}
 
+var colors, str = "#", n;
 for (var k in vehiclecolors) { // make string hex codes
-    var colors = vehiclecolors[k];
-    var str = '#';
+    colors = vehiclecolors[k];
+    str = "#";
     for (var i=0; i<3; i++) {
-        var n = colors[i];
-        if (n < 16) str += '0';
+        n = colors[i];
+        if (n < 16) str += "0";
         str += n.toString(16);
-    }
+    
     vehiclecolors[k] = str;
 }
 
@@ -235,7 +236,7 @@ function redraw(data) {
 
         for (var i in data.players) {
             plr = data.players[i];
-            if (show.players && plr.spectating == null && plr.pos.x && plr.pos.y) {
+            if (show.players && plr.spawned == true && plr.spectating == null && plr.pos.x && plr.pos.y) {
                 str = "<strong>" + safe_tags_replace(plr.name) + "</strong> <span class=\"red\">[" + plr.id + "]</span>" + (plr.hp > 0 ? " - " + plr.hp + " HP" + (plr.ap > 0 ? " | " + plr.ap + " AP" : "") : "") + "<br />Skin: " + skins[plr.skin];
                 if (plr.vehicle && vehiclemodels[plr.vehicle.model]) {
                     str += "<br />Vehicle: " + vehiclemodels[plr.vehicle.model] + " <span style=\"color: #000000;font-weight: bold\"><span style=\"background-color: " + vehiclecolors[plr.vehicle.color[0]] + "\">" + plr.vehicle.color[0] + "</span> <span style=\"background-color: " + vehiclecolors[plr.vehicle.color[1]] + "\">" + plr.vehicle.color[1] + "</span></span>";
