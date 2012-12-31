@@ -324,9 +324,6 @@ function redraw(data) {
     // Update timing tooltip
     timetip.html("Time: <strong>" + (data.hour <= 9 ? "0" : "") + data.hour + ":" + (data.minute <= 9 ? "0" : "") + data.minute + "</strong><br />" + (weathers[data.weather] ? "Weather: <strong>" + weathers[data.weather] + "</strong><br />" : "") + "Rendered in <strong>"+timestart+"</strong> ms.");
     updateTimeTooltip();
-
-    // Loop update
-    window.setTimeout(update, config.updaterate);
 }
 
 $(function () {
@@ -490,4 +487,5 @@ function updateSettings(load) {
 
 function update() {
     $.getJSON(config.updatefile, redraw);
+    window.setTimeout(update, config.updaterate);
 }
