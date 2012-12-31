@@ -62,8 +62,8 @@ Vector2D.prototype.dot = function(radius, color) {
 }
 
 Vector2D.prototype.line = function(vece, color, width) {
-    var vec = this.imgcoords(),
-        vece = vece.imgcoords();
+    var vec = this.imgcoords();
+    vece = vece.imgcoords();
     if (typeof color == "undefined" || !color)
         color = "red";
     if (typeof width == "undefined" || !width)
@@ -243,7 +243,7 @@ function redraw(data) {
                 if (plr.weapon > 0 && weaponmodels[plr.weapon]) {
                     str += "<br />Weapon: " + weaponmodels[plr.weapon];
                 }
-                if (plr.score > 0 || plr.cash > 0)
+                if (plr.score >= 0 && plr.cash >= 0)
                     str += "<br />Score: " + plr.score + " - Cash: $" + plr.cash;
                 if (playerspecs[plr.id])
                     str += "<br />Spectators: " + playerspecs[plr.id];
