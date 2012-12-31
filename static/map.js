@@ -293,7 +293,6 @@ $(function (){
     areatip = $("#zonenametooltip");
     infotip = $("#infotooltip").text("Waiting for data...").show();
     timetip = $("#drawtiming").text("Waiting for data...").show();
-    updateTimeTooltip();
     playerlist = $("#players");
     chatbox = $("#chatbox");
     ctx = canvas.getContext("2d");
@@ -301,6 +300,8 @@ $(function (){
     // Setting canvas info for future use in playerlist/chatbox
     canvasBottom = canvas.offsetTop + canvas.height;
     canvasRight = canvas.offsetLeft + canvas.width;
+
+    updateTimeTooltip();
 
     $('#drawarea').click(function () {
         if (tooltip.css("display") == "block") disablemovecheck = !disablemovecheck;
@@ -311,11 +312,10 @@ $(function (){
             y = e.pageY-canvas.offsetTop;
         if (x < 0 || y < 0 || x >= canvas.width || y >=canvas.height) {
             areatip.hide();
-            tooltip.hide();
+            showTooltip();
         }
         else {
             // Area tooltip
-            //var area = "Vice City";
             var area, zone;
             var gamepos = Vector2D(x, y).gamecoords();
             for(var k in mapzones){
@@ -366,14 +366,13 @@ $(function (){
 
     $(window).bind('mouseout', function () {
         areatip.hide();
-        if (!disablemovecheck) tooltip.hide();
+        if (!disablemovecheck) showTooltip();
     });
 
     $(window).bind('scroll', function () {
         updateAreaTooltip();
         updateTimeTooltip();
         updatePC();
-        if (!disablemovecheck) tooltip.hide();
     });
 
     $(window).bind('resize', function () {
@@ -386,7 +385,7 @@ $(function (){
 });
 
 function showTooltip(tid) {
-    if (tid == -1 || !tooltips[tid]) {
+    if (typeof tid == "undefined" || tid == -1 || !tooltips[tid]) {
         if (disablemovecheck == true) disablemovecheck = false;
         activetooltip = {id:-1,pos:null}
         tooltip.hide();
