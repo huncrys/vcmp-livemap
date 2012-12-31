@@ -171,6 +171,7 @@ for (var k in vehiclecolors) { // make string hex codes
     
     vehiclecolors[k] = str;
 }
+}
 
 for (var k in mapzones) // convert color codes
     mapzones[k].color = "rgba(" + mapzones[k].color[0] + "," + mapzones[k].color[1] + "," + mapzones[k].color[2] + ",0.2)";
