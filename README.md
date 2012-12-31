@@ -37,7 +37,8 @@ __Example for ``data.json``:__
                 "x": -672.98,
                 "y": 941.733
             },
-            "spectating": null
+            "spectating": null,
+            "spawned": true
         },
         {
             "id": 1,
@@ -59,7 +60,8 @@ __Example for ``data.json``:__
                 "x": -672.98,
                 "y": 941.733
             },
-            "spectating": 0
+            "spectating": 0,
+            "spawned": false
         }
     ],
     "messages": [
