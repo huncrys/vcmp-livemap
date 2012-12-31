@@ -1,3 +1,4 @@
 var config = {
-    updaterate:   5000,
+    updaterate: 5000,
+    updatefile: 'data.json'
 }

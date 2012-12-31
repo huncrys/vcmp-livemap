@@ -10,7 +10,10 @@ var ctx,
     timetip,
     tooltip,
     canvasRight,
-    canvasBottom;
+    canvasBottom,
+    show;
+
+$.cookie.json = true;
 
 function Vector2D(x, y) {
     if (!(this instanceof Vector2D))
@@ -191,8 +194,8 @@ function colored_name(nick, team) {
 }
 
 function redraw(data) {
-    if (typeof data == "undefined" || data.length == 0 || typeof data.players == "undefined") {
-        if (!cachedata)
+    if (typeof data == "undefined" || typeof data.players == "undefined") {
+        if (typeof cachedata == "undefined")
             return;
         else
             data = cachedata;
@@ -201,13 +204,6 @@ function redraw(data) {
         cachedata = data;
 
     var timestart = new Date().getTime();
-
-    var show = {
-        players:$("#showplayers").attr("checked"),
-        playerlist:$("#showplayerlist").attr("checked"),
-        chatbox:$("#showchat").attr("checked"),
-        area:$("#showarea").attr("checked")
-    }
 
     // Clear the canvas and the tooltip list
     ctx.clearRect(0, 0, 768, 768);
@@ -272,7 +268,7 @@ function redraw(data) {
         playerlist.html("").hide();
     
     // Draw chatbox
-    if (show.chatbox && data.messages.length > 0) {
+    if (show.chat && data.messages.length > 0) {
         var msgstr = "", msg;
         for (var i in data.messages) {
             msg = data.messages[i];
@@ -328,6 +324,9 @@ function redraw(data) {
     // Update timing tooltip
     timetip.html("Time: <strong>" + (data.hour <= 9 ? "0" : "") + data.hour + ":" + (data.minute <= 9 ? "0" : "") + data.minute + "</strong><br />" + (weathers[data.weather] ? "Weather: <strong>" + weathers[data.weather] + "</strong><br />" : "") + "Rendered in <strong>"+timestart+"</strong> ms.");
     updateTimeTooltip();
+
+    // Loop update
+    window.setTimeout(update, config.updaterate);
 }
 
 $(function () {
@@ -426,9 +425,12 @@ $(function () {
         updatePC();
     });
     
-    $("#showsettings").find('input[type="checkbox"]').click(redraw);
+    $("#showsettings").find('input[type="checkbox"]').click(function () {
+        updateSettings(false);
+    });
 
     update();
+    updateSettings(true);
 });
 
 function showTooltip(tid) {
@@ -463,7 +465,31 @@ function updatePC() {
     chatbox.css('top', (chatTop < plrBottom ? plrBottom : chatTop)).css('left', (chatLeft < canvasRight ? canvasRight : chatLeft));
 }
 
+function updateSettings(load) {
+    if (load) {
+        show = $.cookie('showsettings');
+        if (typeof show == "undefined" || !show || show.length == 0) return updateSettings(false);
+        var setting;
+        for (var k in show) {
+            setting = show[k];
+            console.log(k);
+            console.log(setting);
+            if (setting) $("#show" + k).attr("checked", "checked");
+            else $("#show" + k).removeAttr("checked");
+        }
+    }
+    else {
+        show = {
+            players:$("#showplayers").attr("checked")||false,
+            playerlist:$("#showplayerlist").attr("checked")||false,
+            chat:$("#showchat").attr("checked")||false,
+            area:$("#showarea").attr("checked")||false
+        }
+        $.cookie('showsettings', show, {expires: 30});
+    }
+    redraw();
+}
+
 function update() {
-    $.getJSON('data.json', redraw);
-    window.setTimeout("update()", config.updaterate);
+    $.getJSON(config.updatefile, redraw);
 }
