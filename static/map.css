@@ -42,7 +42,7 @@ canvas {
     display: none;
     position:absolute;
     width: 350px;
-    height: 280px;
+    /*height: 280px;*/
     padding: 2px;
     background-color:rgba(0, 0, 0, 0.75);
     border: 1px solid #000000;
