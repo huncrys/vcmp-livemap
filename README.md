@@ -32,7 +32,11 @@ __Example for ``data.json``:__
             "cash": 0,
             "ping": 83,
             "weapon": 0,
-            "vehicle": null,
+            "vehicle": {
+                "model": 230,
+                "color": [10, 21],
+                "health": 1000
+            },
             "pos": {
                 "x": -672.98,
                 "y": 941.733
@@ -51,11 +55,7 @@ __Example for ``data.json``:__
             "cash": 1123,
             "ping": 83,
             "weapon": 12,
-            "vehicle": {
-                "model": 230,
-                "color": [10, 21],
-                "health": 1000
-            },
+            "vehicle": null,
             "pos": {
                 "x": -672.98,
                 "y": 941.733
@@ -133,6 +133,11 @@ __Example for ``data.json``:__
             "team": 255,
             "msg": "Message text",
             "type": 9
+        },
+        // custom
+        {
+            "msg": "Custom Message text",
+            "type": 10
         }
     ]
 }
