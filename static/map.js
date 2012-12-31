@@ -171,9 +171,9 @@ for (var k in vehiclecolors) { // make string hex codes
         n = colors[i];
         if (n < 16) str += "0";
         str += n.toString(16);
-    
+    }
+
     vehiclecolors[k] = str;
-}
 }
 
 for (var k in mapzones) // convert color codes
