@@ -201,6 +201,9 @@ function redraw(data) {
     var timestart = new Date().getTime();
 
     var show = {
+        players:$("#showplayers").attr("checked"),
+        playerlist:$("#showplayerlist").attr("checked"),
+        chatbox:$("#showchat").attr("checked"),
         area:$("#showarea").attr("checked")
     }
 
@@ -214,23 +217,25 @@ function redraw(data) {
     tooltips = [];
 
     // Draw player blips, list, tooltips
-    if (data.players.length > 0) {
+    if ((show.players || show.playerlist) && data.players.length > 0) {
         var plrstr = "", plr, str, playerspecs = [], tmpname, zone;
 
         data.players.sort(function(a,b) {
             return b.score - a.score;
         });
 
-        for (var i in data.players) {
-            if (data.players[i].spectating == null) continue;
-            tmpname = "<span style=\"color: lightgray\">" + safe_tags_replace(data.players[i].name) + "</span>";
-            if (!playerspecs[data.players[i].spectating]) playerspecs[data.players[i].spectating] = tmpname;
-            else playerspecs[data.players[i].spectating] += ", " + tmpname;
+        if (show.players) {
+            for (var i in data.players) {
+                if (data.players[i].spectating == null) continue;
+                tmpname = "<span style=\"color: lightgray\">" + safe_tags_replace(data.players[i].name) + "</span>";
+                if (!playerspecs[data.players[i].spectating]) playerspecs[data.players[i].spectating] = tmpname;
+                else playerspecs[data.players[i].spectating] += ", " + tmpname;
+            }
         }
 
         for (var i in data.players) {
             plr = data.players[i];
-            if (plr.spectating == null && plr.pos.x && plr.pos.y) {
+            if (show.players && plr.spectating == null && plr.pos.x && plr.pos.y) {
                 str = "<strong>" + safe_tags_replace(plr.name) + "</strong> <span class=\"red\">[" + plr.id + "]</span>" + (plr.hp > 0 ? " - " + plr.hp + " HP" + (plr.ap > 0 ? " | " + plr.ap + " AP" : "") : "") + "<br />Skin: " + skins[plr.skin];
                 if (plr.vehicle && vehiclemodels[plr.vehicle.model]) {
                     str += "<br />Vehicle: " + vehiclemodels[plr.vehicle.model] + " <span style=\"color: #000000;font-weight: bold\"><span style=\"background-color: " + vehiclecolors[plr.vehicle.color[0]] + "\">" + plr.vehicle.color[0] + "</span> <span style=\"background-color: " + vehiclecolors[plr.vehicle.color[1]] + "\">" + plr.vehicle.color[1] + "</span></span>";
@@ -253,7 +258,7 @@ function redraw(data) {
                 Vector2D(plr.pos.x, plr.pos.y).dot(5, (teamcolors[plr.team] || teamcolors[255]));
                 Vector2D(plr.pos.x, plr.pos.y).tooltip(5, true, str, plr.id);
             }
-            plrstr += "<tr><td class=\"id\">" + plr.id + "</td><td>" + colored_name(plr.name, plr.team) + "</td><td class=\"score\">" + plr.score + "</td><td class=\"ping\">" + plr.ping + "</td></tr>";
+            if (show.playerlist) plrstr += "<tr><td class=\"id\">" + plr.id + "</td><td>" + colored_name(plr.name, plr.team) + "</td><td class=\"score\">" + plr.score + "</td><td class=\"ping\">" + plr.ping + "</td></tr>";
         }
         
         if (plrstr != "")
@@ -265,7 +270,7 @@ function redraw(data) {
         playerlist.html("").hide();
     
     // Draw chatbox
-    if (data.messages.length > 0) {
+    if (show.chatbox && data.messages.length > 0) {
         var msgstr = "", msg;
         for (var i in data.messages) {
             msg = data.messages[i];
