@@ -300,6 +300,9 @@ function redraw(data) {
                 case 9: // teamchat
                     msgstr += "<span class=\"teamchat\">" + colored_name(msg.name, msg.team) + ": " + safe_tags_replace(msg.msg) + "</span>";
                     break;
+                case 10: // custom
+                    msgstr += "<span class=\"custom\">" + safe_tags_replace(msg.msg) + "</span>";
+                    break;
             }
             msgstr += "<br />";
         }
