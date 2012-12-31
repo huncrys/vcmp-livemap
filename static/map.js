@@ -472,8 +472,6 @@ function updateSettings(load) {
         var setting;
         for (var k in show) {
             setting = show[k];
-            console.log(k);
-            console.log(setting);
             if (setting) $("#show" + k).attr("checked", "checked");
             else $("#show" + k).removeAttr("checked");
         }
