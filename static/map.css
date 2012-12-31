@@ -171,3 +171,27 @@ div.colb {
     text-align: center;
     text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
 }
+
+#showsettings {
+    position: absolute;
+    display: none;
+    width: 150px;
+    padding: 2px;
+    background-color: rgba(0, 0, 0, 0.65);
+    border: 1px solid #000000;
+    color: white;
+    font-family: "Verdana", "Courier New", Courier, monospace;
+    font-size: 10px;
+    -webkit-border-radius: 6px;
+	border-radius: 6px;
+	-webkit-box-shadow: 2px 2px 2px #000000;
+	box-shadow: 2px 2px 2px #000000;
+}
+
+#drawtiming {
+    text-align: right;
+}
+
+#infotooltip, #zonenametooltip {
+    font-size: 14px;
+}

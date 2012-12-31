@@ -25,15 +25,11 @@ function Vector2D(x, y) {
 }
 
 Vector2D.prototype.imgcoords = function() {
-    this.x = Math.round((this.x*1.023/4+512)*0.75);
-    this.y = Math.round((-this.y*1.023/4+512)*0.75);
-    return this;
+    return Vector2D(Math.round((this.x*1.023/4+512)*0.75), Math.round((-this.y*1.023/4+512)*0.75));
 }
 
 Vector2D.prototype.gamecoords = function() {
-    this.x = (this.x-384)/384*2048;
-    this.y = -(this.y-384)/384*2048;
-    return this;
+    return Vector2D((this.x-384)/384*2048, -(this.y-384)/384*2048);
 }
 
 Vector2D.prototype.distance = function(x, y) {
@@ -66,8 +62,8 @@ Vector2D.prototype.dot = function(radius, color) {
 }
 
 Vector2D.prototype.line = function(vece, color, width) {
-    var vec = this.imgcoords();
-    vece = Vector2D(vece.x, vece.y).imgcoords();
+    var vec = this.imgcoords(),
+        vece = vece.imgcoords();
     if (typeof color == "undefined" || !color)
         color = "red";
     if (typeof width == "undefined" || !width)
@@ -121,6 +117,15 @@ Vector2D.prototype.star = function(a, n, color) {
     ctx.fill();
 }
 
+Vector2D.prototype.rect = function(vece, color) {
+    var vec = this.imgcoords(),
+        vece = vece.imgcoords();
+    if (typeof color == "undefined" || !color)
+        color = "rgba(0, 255, 255, 0.5)";
+    ctx.fillStyle = color;
+    ctx.fillRect(vec.x, vec.y, vece.x-vec.x, vece.y-vec.y);
+}
+
 Vector2D.prototype.tooltip = function(a, isradius, text, key) {
     var vec = this.imgcoords();
     if (!isradius)
@@ -132,7 +137,20 @@ Vector2D.prototype.tooltip = function(a, isradius, text, key) {
 }
 
 // Info variables
-var mapzones = [{vstart:Vector2D(-1613.03, 413.128), vend:Vector2D(-213.73, 1677.32), name:"Downtown"},{vstart:Vector2D(163.656, -351.153), vend:Vector2D(1246.03, 1398.85), name:"Vice Point"},{vstart:Vector2D(-103.97, -930.526), vend:Vector2D(1246.03, -351.153), name:"Washington Beach"},{vstart:Vector2D(-253.206, -1805.37), vend:Vector2D(1254.9, -930.526), name:"Ocean Beach"},{vstart:Vector2D(-1888.21, -1779.61), vend:Vector2D(-1208.21, 230.39), name:"Escobar International"},{vstart:Vector2D(-748.206, -818.266), vend:Vector2D(-104.505, -241.467), name:"Starfish Island"},{vstart:Vector2D(-213.73, 797.605), vend:Vector2D(163.656, 1243.47), name:"Prawn Island"},{vstart:Vector2D(-213.73, -241.429), vend:Vector2D(163.656, 797.605), name:"Leaf Links"},{vstart:Vector2D(-1396.76, -42.9113), vend:Vector2D(-1208.21, 230.39), name:"Junk Yard"},{vstart:Vector2D(-1208.21, -1779.61), vend:Vector2D(-253.206, -898.738), name:"Viceport"},{vstart:Vector2D(-1208.21, -898.738), vend:Vector2D(-748.206, -241.467), name:"Little Havana"},{vstart:Vector2D(-1208.21, -241.467), vend:Vector2D(-578.289, 412.66), name:"Little Haiti"}]
+var mapzones = [
+    {vstart:Vector2D(-1613.03, 413.128), vend:Vector2D(-213.73, 1677.32), name:"Downtown", color: [0, 254, 127]},
+    {vstart:Vector2D(163.656, -351.153), vend:Vector2D(1246.03, 1398.85), name:"Vice Point", color: [127, 254, 0]},
+    {vstart:Vector2D(-103.97, -930.526), vend:Vector2D(1246.03, -351.153), name:"Washington Beach", color: [127, 254, 127]},
+    {vstart:Vector2D(-253.206, -1805.37), vend:Vector2D(1254.9, -930.526), name:"Ocean Beach", color: [0, 254, 254]},
+    {vstart:Vector2D(-1888.21, -1779.61), vend:Vector2D(-1208.21, 230.39), name:"Escobar International",color: [0, 0, 254]},
+    {vstart:Vector2D(-748.206, -818.266), vend:Vector2D(-104.505, -241.467), name:"Starfish Island", color: [127, 127, 0]},
+    {vstart:Vector2D(-213.73, 797.605), vend:Vector2D(163.656, 1243.47), name:"Prawn Island", color: [127, 0, 0]},
+    {vstart:Vector2D(-213.73, -241.429), vend:Vector2D(163.656, 797.605), name:"Leaf Links", color: [254, 254, 0]},
+    {vstart:Vector2D(-1396.76, -42.9113), vend:Vector2D(-1208.21, 230.39), name:"Junk Yard", color: [127, 127, 254]},
+    {vstart:Vector2D(-1208.21, -1779.61), vend:Vector2D(-253.206, -898.738), name:"Viceport", color: [127, 254, 254]},
+    {vstart:Vector2D(-1208.21, -898.738), vend:Vector2D(-748.206, -241.467), name:"Little Havana", color: [254, 254, 127]},
+    {vstart:Vector2D(-1208.21, -241.467), vend:Vector2D(-578.289, 412.66), name:"Little Haiti", color: [254, 127, 254]}
+]
 var weaponmodels = {0:"Unarmed",1:"Brass Knuckles",2:"Screwdriver",3:"Golf Club",4:"Nightstick",5:"Knife",6:"Baseball Bat",7:"Hammer",8:"Meat Cleaver",9:"Machete",10:"Katana",11:"Chainsaw",12:"Grenade",13:"Remote Detonation Grenade",14:"Tear Gas",15:"Molotov Cocktails",16:"Rocket",17:"Colt45",18:"Python",19:"Shotgun",20:"SPAZ Shotgun",21:"Stubby Shotgun",22:"Tec9",23:"Uzi",24:"Silenced Ingram",25:"MP5",26:"M4",27:"Ruger",28:"Sniper Rifle",29:"Laser Sniper Rifle",30:"Rocket Launcher",31:"Flame Thrower",32:"M60",33:"Minigun",42:"Drive-By",43:"Drowned",60:"Heli Blade",255:"Suicide"}
 var skins = {0:"Tommy Vercetti",1:"Cop",2:"Swat",3:"FBI",4:"Army",5:"Paramedic",6:"Fireman",7:"Golf guy #1",9:"Bum lady #1",10:"Bum lady #2",11:"Punk #1",12:"Lawyer",13:"Spanish lady #1",14:"Spanish lady #2",15:"Cool guy #1",16:"Arabic guy",17:"Beach lady #1",18:"Beach lady #2",19:"Beach guy #1",20:"Beach guy #2",21:"Office lady #1",22:"Waitress #1",23:"Food lady",24:"Prostitue #1",25:"Bum lady #2",26:"Bum guy #1",27:"Garbageman #1",28:"Taxi driver #1",29:"Hatian #1",30:"Criminal #1",31:"Hood lady",32:"Granny #1",33:"Business man #1",34:"Church guy",35:"Club lady",36:"Church lady",37:"Pimp",38:"Beach lady #3",39:"Beach guy #3",40:"Beach lady #4",41:"Beach guy #4",42:"Business man #2",43:"Prostitute #2",44:"Bum lady #3",45:"Bum guy #2",46:"Hatian #2",47:"Construction worker #1",48:"Punk #2",49:"Prostitute #2",50:"Granny #2",51:"Punk #3",52:"Business man #3",53:"Spanish lady #3",54:"Spanish lady #4",55:"Cool guy #2",56:"Business man #4",57:"Beach lady #5",58:"Beach guy #5",59:"Beach lady #6",60:"Beach guy #6",61:"Construction worker #2",62:"Golf guy #2",63:"Golf lady",64:"Golf guy #3",65:"Beach lady #7",66:"Beach guy #7",67:"Office lady #2",68:"Business man #5",69:"Business man #6",70:"Prostitute #2",71:"Bum lady #4",72:"Bum guy #3",73:"Spanish guy",74:"Taxi driver #2",75:"Gym lady",76:"Gym guy",77:"Skate lady",78:"Skate guy",79:"Shopper #1",80:"Shopper #2",81:"Tourist #1",82:"Tourist #2",83:"Cuban #1",84:"Cuban #2",85:"Hatian #3",86:"Hatian #4",87:"Shark #1",88:"Shark #2",89:"Diaz guy #1",90:"Diaz guy #2",91:"DBP security #1",92:"DBP security #2",93:"Biker #1",94:"Biker #2",95:"Vercetti guy #1",96:"Vercetti guy #2",97:"Undercover cop #1",98:"Undercover cop #2",99:"Undercover cop #3",100:"Undercover cop #4",101:"Undercover cop #5",102:"Undercover cop #6",103:"Rich guy",104:"Cool guy #3",105:"Prostitute #3",106:"Prostitute #4",107:"Love Fist #1",108:"Ken Rosenberg",109:"Candy Suxx",110:"Hilary",111:"Love Fist #2",112:"Phil",113:"Rockstar guy",114:"Sonny",115:"Lance",116:"Mercades",117:"Love Fist #3",118:"Alex Srub",119:"Lance (Cop)",120:"Lance",121:"Cortez",122:"Love Fist #3",123:"Columbian guy #1",124:"Hilary (Robber)",125:"Mercades",126:"Cam",127:"Cam (Robber)",128:"Phil (One arm)",129:"Phil (Robber)",130:"Cool guy #4",131:"Pizzaman",132:"Taxi driver #1",133:"Taxi driver #2",134:"Sailor #1",135:"Sailor #2",136:"Sailor #3",137:"Chef",138:"Criminal #2",139:"French guy",140:"Garbageman #2",141:"Hatian #5",142:"Waitress #2",143:"Sonny guy #1",144:"Sonny guy #2",145:"Sonny guy #3",146:"Columbian guy #2",147:"Thug #1",148:"Beach guy #8",149:"Garbageman #3",150:"Garbageman #4",151:"Garbageman #5",152:"Tranny",153:"Thug #5",154:"SpandEx guy #1",155:"SpandEx guy #2",156:"Stripper #1",157:"Stripper #2",158:"Stripper #3",159:"Store clerk"}
 var weathers = {0:"Partly cloudy",1:"Overcast cloudy skies",2:"Lightning",3:"Fog with low visibility",4:"Clear skies",5:"Rain",6:"Darkness from the eclipse",7:"Light sky, partly cloudy",8:"Overcast partly cloudy",9:"Grey sky, black clouds"}
@@ -142,16 +160,19 @@ var vehiclecolors = {0:[5,5,5],1:[245,245,245],2:[42,119,161],3:[132,4,16],4:[38
 var teamcolors = {0:"#778898",1:"#ff8d13",2:"#c715ff",3:"#20b1aa",4:"#ffd720",5:"#dc143b",6:"#6395ec",7:"#ff1494",8:"#f4a361",9:"#ee82ef",10:"#8b4512",11:"#f0e78c",12:"#148a8a",13:"#14ff7f",14:"#566b30",15:"#191971",16:"#ffffff",255:"#ffffff"}
 var partreasons = {0:"Timeout",1:"Quit",2:"Kicked",3:"Banned",4:"Crashed"}
 
-for (var key in vehiclecolors) { // make string hex codes
-    var colors = vehiclecolors[key];
+for (var k in vehiclecolors) { // make string hex codes
+    var colors = vehiclecolors[k];
     var str = '#';
     for (var i=0; i<3; i++) {
         var n = colors[i];
         if (n < 16) str += '0';
         str += n.toString(16);
     }
-    vehiclecolors[key] = str;
+    vehiclecolors[k] = str;
 }
+
+for (var k in mapzones) // convert color codes
+    mapzones[k].color = "rgba(" + mapzones[k].color[0] + "," + mapzones[k].color[1] + "," + mapzones[k].color[2] + ",0.2)";
 
 var tagsToReplace = {'&': '&amp;','<': '&lt;','>': '&gt;'}
 
@@ -168,13 +189,28 @@ function colored_name(nick, team) {
 }
 
 function redraw(data) {
-    if (typeof data == "undefined" || data.length == 0 || typeof data.players == "undefined")
-        return;
+    if (typeof data == "undefined" || data.length == 0 || typeof data.players == "undefined") {
+        if (!cachedata)
+            return;
+        else
+            data = cachedata;
+    }
+    else
+        cachedata = data;
 
     var timestart = new Date().getTime();
 
+    var show = {
+        area:$("#showarea").attr("checked")
+    }
+
     // Clear the canvas and the tooltip list
     ctx.clearRect(0, 0, 768, 768);
+    if (show.area) {
+        for (var k in mapzones) {
+            mapzones[k].vstart.rect(mapzones[k].vend, mapzones[k].color);
+        }
+    }
     tooltips = [];
 
     // Draw player blips, list, tooltips
@@ -287,7 +323,7 @@ function redraw(data) {
     updateTimeTooltip();
 }
 
-$(function (){
+$(function () {
     canvas = $("#drawarea")[0];
     tooltip = $("#drawareatooltip");
     areatip = $("#zonenametooltip");
@@ -301,6 +337,8 @@ $(function (){
     canvasBottom = canvas.offsetTop + canvas.height;
     canvasRight = canvas.offsetLeft + canvas.width;
 
+    var setdiv = $("#showsettings");
+    setdiv.css('top', canvas.offsetTop).css('left', canvasRight - setdiv.outerWidth()).show();
     updateTimeTooltip();
 
     $('#drawarea').click(function () {
@@ -380,6 +418,8 @@ $(function (){
         updateTimeTooltip();
         updatePC();
     });
+    
+    $("#showsettings").find('input[type="checkbox"]').click(redraw);
 
     update();
 });
