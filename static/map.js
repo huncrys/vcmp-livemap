@@ -186,6 +186,7 @@ function replaceTag(tag) {
 }
 
 function safe_tags_replace(str) {
+    if (typeof str != "string") return "";
     return str.replace(/[&<>]/g, replaceTag);
 }
 
