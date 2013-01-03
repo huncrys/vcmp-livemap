@@ -208,7 +208,7 @@ function redraw(data) {
 
     // Clear the canvas and the tooltip list
     ctx.clearRect(0, 0, 768, 768);
-    if (show.area) {
+    if (show.areacol) {
         for (var k in mapzones) {
             mapzones[k].vstart.rect(mapzones[k].vend, mapzones[k].color);
         }
@@ -315,8 +315,6 @@ function redraw(data) {
     else
         chatbox.html("").hide();
 
-    updatePC();
-
     // Show last active tooltip if it exists
     showTooltip(activetooltip.id);
     
@@ -326,27 +324,27 @@ function redraw(data) {
     timestart = new Date().getTime() - timestart;
 
     // Update timing tooltip
-    timetip.html("Time: <strong>" + (data.hour <= 9 ? "0" : "") + data.hour + ":" + (data.minute <= 9 ? "0" : "") + data.minute + "</strong><br />" + (weathers[data.weather] ? "Weather: <strong>" + weathers[data.weather] + "</strong><br />" : "") + "Rendered in <strong>"+timestart+"</strong> ms.");
-    updateTimeTooltip();
+    timetip.html("Time: <strong>" + (data.hour <= 9 ? "0" : "") + data.hour + ":" + (data.minute <= 9 ? "0" : "") + data.minute + "</strong><br />" + (weathers[data.weather] ? "Weather: <strong>" + weathers[data.weather] + "</strong><br />" : "") + "Rendered in <strong>"+timestart+"</strong> ms.").css('left', canvasRight - timetip.outerWidth());
 }
 
 $(function () {
     canvas = $("#drawarea")[0];
-    tooltip = $("#drawareatooltip");
-    areatip = $("#zonenametooltip");
-    infotip = $("#infotooltip").text("Waiting for data...").show();
-    timetip = $("#drawtiming").text("Waiting for data...").show();
-    playerlist = $("#players");
-    chatbox = $("#chatbox");
-    ctx = canvas.getContext("2d");
 
     // Setting canvas info for future use in playerlist/chatbox
     canvasBottom = canvas.offsetTop + canvas.height;
     canvasRight = canvas.offsetLeft + canvas.width;
 
+    tooltip = $("#tooltip");
+    areatip = $("#areatip");
+    infotip = $("#infotip").text("Waiting for data...");
+    timetip = $("#timetip").text("Waiting for data...");
+    playerlist = $("#players");
+    chatbox = $("#chatbox");
+    ctx = canvas.getContext("2d");
+
     var setdiv = $("#showsettings");
-    setdiv.css('top', canvas.offsetTop).css('left', canvasRight - setdiv.outerWidth()).show();
-    updateTimeTooltip();
+    timetip.css('left', canvasRight - timetip.outerWidth());
+    setdiv.css('left', canvasRight - setdiv.outerWidth()).show();
 
     $('#drawarea').click(function () {
         if (tooltip.css("display") == "block") disablemovecheck = !disablemovecheck;
@@ -355,13 +353,11 @@ $(function () {
     $(window).mousemove(function (e) {
         var x = e.pageX-canvas.offsetLeft,
             y = e.pageY-canvas.offsetTop;
-        if (x < 0 || y < 0 || x >= canvas.width || y >=canvas.height) {
-            areatip.hide();
+        if (x < 0 || y < 0 || x >= canvas.width || y >=canvas.height)
             showTooltip();
-        }
         else {
             // Area tooltip
-            var area, zone;
+            var area = "Vice City", zone;
             var gamepos = Vector2D(x, y).gamecoords();
             for(var k in mapzones){
                 zone = mapzones[k];
@@ -370,13 +366,7 @@ $(function () {
                     break;
                 }
             }
-            if (!area)
-                areatip.hide();
-            else {
-                areatip.text(area);
-                areatip.show();
-                updateAreaTooltip();
-            }
+            areatip.text(area);
             // Blip tooltip
             if (disablemovecheck) return;
             var tid = -1, tclosest = 0, smallest = 0, tt, c, dist, a, pos, size;
@@ -410,23 +400,10 @@ $(function () {
     });
 
     $(window).bind('mouseout', function () {
-        areatip.hide();
         if (!disablemovecheck) showTooltip();
     });
-
-    $(window).bind('scroll', function () {
-        updateAreaTooltip();
-        updateTimeTooltip();
-        updatePC();
-    });
-
-    $(window).bind('resize', function () {
-        updateAreaTooltip();
-        updateTimeTooltip();
-        updatePC();
-    });
     
-    $("#showsettings").find('input[type="checkbox"]').click(function () {
+    setdiv.find('input[type="checkbox"]').click(function () {
         updateSettings(false);
     });
 
@@ -447,25 +424,6 @@ function showTooltip(tid) {
     tooltip.html(tooltips[tid].text).css('left', pos.x+8).css('top', pos.y+8).show();
 }
 
-function updateAreaTooltip() {
-    var areaTop = $(window).scrollTop()+$(window).height();
-    areatip.css('top', (areaTop > canvasBottom ? canvasBottom : areaTop)-areatip.outerHeight());
-}
-
-function updateTimeTooltip() {
-    var timeTop = $(window).scrollTop()+$(window).height();
-    timetip.css('top', (timeTop > canvasBottom ? canvasBottom : timeTop)-timetip.outerHeight()).css('left', canvas.offsetLeft + canvas.width - timetip.outerWidth());
-}
-
-function updatePC() {
-    var chatTop = $(window).scrollTop()+$(window).height() - chatbox.outerHeight(),
-        chatLeft = $(window).scrollLeft()+$(window).width() - chatbox.outerWidth(),
-        plrLeft = $(window).scrollLeft()+$(window).width() - playerlist.outerWidth(),
-        plrBottom = $(window).scrollTop() + playerlist.outerHeight();
-    playerlist.css('top', $(window).scrollTop()).css('left', (plrLeft < canvasRight ? canvasRight : plrLeft));
-    chatbox.css('top', (chatTop < plrBottom ? plrBottom : chatTop)).css('left', (chatLeft < canvasRight ? canvasRight : chatLeft));
-}
-
 function updateSettings(load) {
     if (load) {
         show = $.cookie('showsettings');
@@ -477,15 +435,23 @@ function updateSettings(load) {
             else $("#show" + k).removeAttr("checked");
         }
     }
-    else {
-        show = {
-            players:$("#showplayers").attr("checked")||false,
-            playerlist:$("#showplayerlist").attr("checked")||false,
-            chat:$("#showchat").attr("checked")||false,
-            area:$("#showarea").attr("checked")||false
-        }
-        $.cookie('showsettings', show, {expires: 30});
+    show = {
+        players:$("#showplayers").attr("checked")||false,
+        playerlist:$("#showplayerlist").attr("checked")||false,
+        chat:$("#showchat").attr("checked")||false,
+        info:$("#showinfo").attr("checked")||false,
+        area:$("#showarea").attr("checked")||false,
+        time:$("#showtime").attr("checked")||false,
+        areacol:$("#showareacol").attr("checked")||false
     }
+    if (!load)
+        $.cookie('showsettings', show, {expires: 30});
+    if (!show.info) infotip.hide();
+    else infotip.show();
+    if (!show.area) areatip.hide();
+    else areatip.show();
+    if (!show.time) timetip.hide();
+    else timetip.show();
     redraw();
 }
 
