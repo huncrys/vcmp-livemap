@@ -319,12 +319,14 @@ function redraw(data) {
     showTooltip(activetooltip.id);
     
     // Update info tooltip
-    infotip.text("Server: " + data.hostname + " | Players: " + data.numplayers + "/" + data.maxplayers);
+    if (show.info)
+        infotip.text("Server: " + data.hostname + " | Players: " + data.numplayers + "/" + data.maxplayers);
 
     timestart = new Date().getTime() - timestart;
 
     // Update timing tooltip
-    timetip.html("Time: <strong>" + (data.hour <= 9 ? "0" : "") + data.hour + ":" + (data.minute <= 9 ? "0" : "") + data.minute + "</strong><br />" + (weathers[data.weather] ? "Weather: <strong>" + weathers[data.weather] + "</strong><br />" : "") + "Rendered in <strong>"+timestart+"</strong> ms.").css('left', canvasRight - timetip.outerWidth());
+    if (show.time)
+        timetip.html("Time: <strong>" + (data.hour <= 9 ? "0" : "") + data.hour + ":" + (data.minute <= 9 ? "0" : "") + data.minute + "</strong><br />" + (weathers[data.weather] ? "Weather: <strong>" + weathers[data.weather] + "</strong><br />" : "") + "Rendered in <strong>"+timestart+"</strong> ms.").css('left', canvasRight - timetip.outerWidth());
 }
 
 $(function () {
@@ -334,10 +336,11 @@ $(function () {
     canvasBottom = canvas.offsetTop + canvas.height;
     canvasRight = canvas.offsetLeft + canvas.width;
 
+    var plhtext = "Waiting for data...";
     tooltip = $("#tooltip");
-    areatip = $("#areatip");
-    infotip = $("#infotip").text("Waiting for data...");
-    timetip = $("#timetip").text("Waiting for data...");
+    areatip = $("#areatip").text("Vice City");
+    infotip = $("#infotip").text(plhtext);
+    timetip = $("#timetip").text(plhtext);
     playerlist = $("#players");
     chatbox = $("#chatbox");
     ctx = canvas.getContext("2d");
@@ -407,8 +410,8 @@ $(function () {
         updateSettings(false);
     });
 
-    update();
     updateSettings(true);
+    update();
 });
 
 function showTooltip(tid) {
