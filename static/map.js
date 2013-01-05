@@ -203,14 +203,15 @@ function colored_name(nick, team) {
 }
 
 function redraw(data) {
+    var cached = false;
     if (typeof data == "undefined" || typeof data.players == "undefined") {
         if (typeof cachedata == "undefined")
             return;
-        else
+        else {
+            cached = true;
             data = cachedata;
+        }
     }
-    else
-        cachedata = data;
 
     var timestart = new Date().getTime();
 
@@ -227,9 +228,11 @@ function redraw(data) {
     if ((show.players || show.playerlist) && data.players.length > 0) {
         var plrstr = "", plr, str, playerspecs = [], tmpname, zone;
 
-        data.players.sort(function(a,b) {
-            return b.score - a.score;
-        });
+        if (!cached) {
+            data.players.sort(function(a,b) {
+                return b.score - a.score;
+            });
+        }
 
         if (show.players) {
             for (var i in data.players) {
@@ -277,7 +280,7 @@ function redraw(data) {
         playerlist.html("").hide();
     
     // Draw chatbox
-    if (show.chat && data.messages.length > 0) {
+    if (show.chat && !cached && data.messages.length > 0) {
         var msgstr = "", msg;
         for (var i in data.messages) {
             msg = data.messages[i];
@@ -320,16 +323,19 @@ function redraw(data) {
         else
             chatbox.html("").hide();
     }
+    else if (show.chat && cached)
+        chatbox.show();
     else
         chatbox.html("").hide();
 
     // Show last active tooltip if it exists
     showTooltip(activetooltip.id);
-    
-    // Update info tooltip
-    if (show.info)
-        infotip.text("Server: " + data.hostname + " | Players: " + data.numplayers + "/" + data.maxplayers);
 
+    // Update info tooltip
+    if (show.info && !cached)
+        infotip.text("Server: " + data.hostname + " | Players: " + data.numplayers + "/" + data.maxplayers);
+    
+    cachedata = data;
     timestart = new Date().getTime() - timestart;
 
     // Update timing tooltip
