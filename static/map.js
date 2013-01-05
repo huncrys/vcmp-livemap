@@ -358,7 +358,7 @@ $(function () {
     settip = $("#showsettings");
 
     $('#drawarea').click(function () {
-        if (tooltip.css("display") == "block") movecheck = true;
+        if (tooltip.css("display") == "block") movecheck = !movecheck;
     });
 
     $(window).mousemove(function (e) {
