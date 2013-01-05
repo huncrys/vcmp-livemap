@@ -493,5 +493,9 @@ function onMapResize() {
 
     timetip.css('left', canvasRight - timetip.outerWidth());
     settip.css('left', canvasRight - settip.outerWidth());
+
+    // Setting playerlist max-height
+    playerlist.css('max-height', (mapheight-300 < 200 ? 200 : mapheight-300));
+
     redraw();
 }
