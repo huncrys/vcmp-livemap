@@ -8,8 +8,8 @@ var drawarea        = null,
     infotip         = null,
     timetip         = null,
     tooltip         = null,
-    settip         = null,
-    canvasRight     = 0,
+    settip          = null,
+    canvasRight     = 768,
     mapheight       = 768,
     mapscale        = 0.75,
     movecheck       = true,
@@ -39,7 +39,8 @@ Vector2D.prototype.imgcoords = function() {
 }
 
 Vector2D.prototype.gamecoords = function() {
-    return Vector2D((this.x-384)/384*2048, -(this.y-384)/384*2048);
+    var height = mapheight / 2;
+    return Vector2D((this.x-height)/height*2048, -(this.y-height)/height*2048);
 }
 
 Vector2D.prototype.distance = function(x, y) {
@@ -478,9 +479,11 @@ function onMapResize() {
     if (mapheight < 512) mapheight = 512;
     mapscale = (mapheight/1024);
     drawarea.width(mapheight).height(mapheight);
+    canvas.width = mapheight;
+    canvas.height = mapheight;
 
     // Setting canvas info for future use in playerlist/chatbox
-    canvasRight = drawarea.offset().left + drawarea.width();
+    canvasRight = canvas.offsetLeft + canvas.width;
 
     timetip.css('left', canvasRight - timetip.outerWidth());
     settip.css('left', canvasRight - settip.outerWidth());
