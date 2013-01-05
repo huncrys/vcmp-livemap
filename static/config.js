@@ -1,4 +1,5 @@
 var config = {
-    updaterate: 5000,
-    updatefile: 'data.json'
+    updaterate: 2500,
+    updatefile: 'data.json',
+    cookietime: 3650
 }

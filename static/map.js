@@ -1,17 +1,24 @@
 // Global variables
-var ctx,
-    tooltips = [],
-    activetooltip = {id:-1,pos:null},
-    disablemovecheck = false,
-    chatbox,
-    playerlist,
-    areatip,
-    infotip,
-    timetip,
-    tooltip,
-    canvasRight,
-    canvasBottom,
-    show;
+var drawarea        = null,
+    canvas          = null,
+    ctx             = null,
+    chatbox         = null,
+    playerlist      = null,
+    areatip         = null,
+    infotip         = null,
+    timetip         = null,
+    tooltip         = null,
+    settip         = null,
+    canvasRight     = 0,
+    mapheight       = 768,
+    mapscale        = 0.75,
+    movecheck       = true,
+    tooltips        = [],
+    show            = {},
+    activetooltip   = {
+        id: -1,
+        pos: null
+    };
 
 $.cookie.json = true;
 
@@ -20,7 +27,7 @@ function Vector2D(x, y) {
         return new Vector2D(x, y);
     if (typeof x == "undefined")
         x = 0;
-    else if (typeof y == "undefined")
+    if (typeof y == "undefined")
         y = 0;
     this.x = x;
     this.y = y;
@@ -28,7 +35,7 @@ function Vector2D(x, y) {
 }
 
 Vector2D.prototype.imgcoords = function() {
-    return Vector2D(Math.round((this.x*1.023/4+512)*0.75), Math.round((-this.y*1.023/4+512)*0.75));
+    return Vector2D(Math.round((this.x*1.023/4+512)*mapscale), Math.round((-this.y*1.023/4+512)*mapscale));
 }
 
 Vector2D.prototype.gamecoords = function() {
@@ -207,7 +214,7 @@ function redraw(data) {
     var timestart = new Date().getTime();
 
     // Clear the canvas and the tooltip list
-    ctx.clearRect(0, 0, 768, 768);
+    ctx.clearRect(0, 0, mapheight, mapheight);
     if (show.areacol) {
         for (var k in mapzones) {
             mapzones[k].vstart.rect(mapzones[k].vend, mapzones[k].color);
@@ -257,11 +264,11 @@ function redraw(data) {
                 Vector2D(plr.pos.x, plr.pos.y).dot(5, (teamcolors[plr.team] || teamcolors[255]));
                 Vector2D(plr.pos.x, plr.pos.y).tooltip(5, true, str, plr.id);
             }
-            if (show.playerlist) plrstr += "<tr><td class=\"id\">" + plr.id + "</td><td>" + colored_name(plr.name, plr.team) + "</td><td class=\"score\">" + plr.score + "</td><td class=\"ping\">" + plr.ping + "</td></tr>";
+            if (show.playerlist) plrstr += "<tr><td class=\"id\">" + plr.id + "</td><td class=\"name\">" + colored_name(plr.name, plr.team) + "</td><td class=\"score\">" + plr.score + "</td><td class=\"ping\">" + plr.ping + "</td></tr>";
         }
         
         if (plrstr != "")
-            playerlist.html("<b>Player list</b><br /><br /><table><thead><tr><th class=\"id\">id</th><th>name</th><th class=\"score\">score</th><th class=\"ping\">ping</th></tr></thead><tbody>" + plrstr + "</tbody></table>").show();
+            playerlist.html("<b>Player list</b><br /><br /><table><thead><tr><th class=\"id\">id</th><th class=\"name\">name</th><th class=\"score\">score</th><th class=\"ping\">ping</th></tr></thead><tbody>" + plrstr + "</tbody></table>").show();
         else
             playerlist.html("").hide();
     }
@@ -330,11 +337,8 @@ function redraw(data) {
 }
 
 $(function () {
+    drawarea = $("#drawarea");
     canvas = $("#drawarea")[0];
-
-    // Setting canvas info for future use in playerlist/chatbox
-    canvasBottom = canvas.offsetTop + canvas.height;
-    canvasRight = canvas.offsetLeft + canvas.width;
 
     var plhtext = "Waiting for data...";
     tooltip = $("#tooltip");
@@ -344,13 +348,10 @@ $(function () {
     playerlist = $("#players");
     chatbox = $("#chatbox");
     ctx = canvas.getContext("2d");
-
-    var setdiv = $("#showsettings");
-    timetip.css('left', canvasRight - timetip.outerWidth());
-    setdiv.css('left', canvasRight - setdiv.outerWidth()).show();
+    settip = $("#showsettings");
 
     $('#drawarea').click(function () {
-        if (tooltip.css("display") == "block") disablemovecheck = !disablemovecheck;
+        if (tooltip.css("display") == "block") movecheck = true;
     });
 
     $(window).mousemove(function (e) {
@@ -371,7 +372,7 @@ $(function () {
             }
             areatip.text(area);
             // Blip tooltip
-            if (disablemovecheck) return;
+            if (!movecheck) return;
             var tid = -1, tclosest = 0, smallest = 0, tt, c, dist, a, pos, size;
             for (var i in tooltips) {
                 tt = tooltips[i];
@@ -403,20 +404,29 @@ $(function () {
     });
 
     $(window).bind('mouseout', function () {
-        if (!disablemovecheck) showTooltip();
+        if (movecheck) showTooltip();
     });
     
-    setdiv.find('input[type="checkbox"]').click(function () {
+    $(window).bind('resize', onMapResize);
+    
+    settip.find('input[type="checkbox"]').click(function () {
         updateSettings(false);
     });
 
+    // Update elements
+    onMapResize();
     updateSettings(true);
+    
+    // Show settings
+    settip.show();
+    
+    // Loop the update
     update();
 });
 
 function showTooltip(tid) {
     if (typeof tid == "undefined" || tid == -1 || !tooltips[tid]) {
-        if (disablemovecheck == true) disablemovecheck = false;
+        if (movecheck == false) movecheck = true;
         activetooltip = {id:-1,pos:null}
         tooltip.hide();
         return;
@@ -448,7 +458,7 @@ function updateSettings(load) {
         areacol:$("#showareacol").attr("checked")||false
     }
     if (!load)
-        $.cookie('showsettings', show, {expires: 30});
+        $.cookie('showsettings', show, {expires: config.cookietime});
     if (!show.info) infotip.hide();
     else infotip.show();
     if (!show.area) areatip.hide();
@@ -461,4 +471,18 @@ function updateSettings(load) {
 function update() {
     $.getJSON(config.updatefile, redraw);
     window.setTimeout(update, config.updaterate);
+}
+
+function onMapResize() {
+    mapheight = $(window).height()-3;
+    if (mapheight < 512) mapheight = 512;
+    mapscale = (mapheight/1024);
+    drawarea.width(mapheight).height(mapheight);
+
+    // Setting canvas info for future use in playerlist/chatbox
+    canvasRight = drawarea.offset().left + drawarea.width();
+
+    timetip.css('left', canvasRight - timetip.outerWidth());
+    settip.css('left', canvasRight - settip.outerWidth());
+    redraw();
 }

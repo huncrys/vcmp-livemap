@@ -8,11 +8,17 @@ body {
     color: white;
 }
 
-canvas {
+strong {
+    font-weight: bold;
+}
+
+#drawarea {
     background: url('map.png') no-repeat;
     background-size: 100%;
     margin: 0;
     padding: 0;
+    width: 768px;
+    height: 768px;
 }
 
 #showsettings {
@@ -148,10 +154,11 @@ canvas {
 }
 
 #players td span {
-    display: inline-block;
-    width: 118px;
+    width: 126px;
     white-space: nowrap;
     overflow: hidden;
+    padding: 0;
+    margin: 0;
 }
 
 #players th {
@@ -159,13 +166,13 @@ canvas {
 }
 
 #players td.name, #players th.name {
-    width: 120px;
-    padding: 2px;
-    border-right: 1px solid #FFFFFF;
+    width: 130px;
+    padding-left: 2px;
+    padding-right: 2px;
 }
 
 #players th.id, #players td.id {
-    width: auto;
+    width: 16px;
 }
 
 #players th.score, #players td.score {
@@ -183,11 +190,4 @@ canvas {
 
 #players td.id, #players td.score, #players td.ping, #players th.ping {
     text-align: right;
-}
-
-div.colb {
-    display: inline-block;
-    width: 40px;
-    text-align: center;
-    text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
 }
