@@ -280,7 +280,7 @@ function redraw(data) {
         playerlist.html("").hide();
     
     // Draw chatbox
-    if (show.chat && !cached && data.messages.length > 0) {
+    if (show.chat && data.messages.length > 0) {
         var msgstr = "", msg;
         for (var i in data.messages) {
             msg = data.messages[i];
@@ -323,8 +323,6 @@ function redraw(data) {
         else
             chatbox.html("").hide();
     }
-    else if (show.chat && cached)
-        chatbox.show();
     else
         chatbox.html("").hide();
 
