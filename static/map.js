@@ -1,24 +1,24 @@
 // Global variables
-var drawarea        = null,
-    canvas          = null,
-    ctx             = null,
-    chatbox         = null,
-    playerlist      = null,
-    areatip         = null,
-    infotip         = null,
-    timetip         = null,
-    tooltip         = null,
-    settip          = null,
-    canvasRight     = 768,
-    mapheight       = 768,
-    mapscale        = 0.75,
-    movecheck       = true,
-    tooltips        = [],
-    show            = {},
-    activetooltip   = {
-        id: -1,
-        pos: null
-    };
+var drawarea        = null;
+var canvas          = null;
+var ctx             = null;
+var chatbox         = null;
+var playerlist      = null;
+var areatip         = null;
+var infotip         = null;
+var timetip         = null;
+var tooltip         = null;
+var settip          = null;
+var canvasRight     = 768;
+var mapheight       = 768;
+var mapscale        = 0.75;
+var movecheck       = true;
+var tooltips        = [];
+var show            = {};
+var activetooltip   = {
+    id: -1,
+    pos: null
+};
 
 $.cookie.json = true;
 
@@ -245,7 +245,7 @@ function redraw(data) {
 
         for (var i in data.players) {
             plr = data.players[i];
-            if (show.players && plr.spawned == true && plr.spectating == null && plr.pos.x && plr.pos.y) {
+            if (show.players && plr.spawned === true && plr.spectating == null && plr.pos.x && plr.pos.y) {
                 str = "<strong>" + safe_tags_replace(plr.name) + "</strong> <span class=\"red\">[" + plr.id + "]</span>" + (plr.hp > 0 ? " - " + plr.hp + " HP" + (plr.ap > 0 ? " | " + plr.ap + " AP" : "") : "") + "<br />Skin: " + skins[plr.skin];
                 if (plr.vehicle && vehiclemodels[plr.vehicle.model]) {
                     str += "<br />Vehicle: " + vehiclemodels[plr.vehicle.model] + " <span style=\"color: #000000;font-weight: bold\"><span style=\"background-color: " + vehiclecolors[plr.vehicle.color[0]] + "\">" + plr.vehicle.color[0] + "</span> <span style=\"background-color: " + vehiclecolors[plr.vehicle.color[1]] + "\">" + plr.vehicle.color[1] + "</span></span>";
@@ -433,7 +433,7 @@ $(function () {
 
 function showTooltip(tid) {
     if (typeof tid == "undefined" || tid == -1 || !tooltips[tid]) {
-        if (movecheck == false) movecheck = true;
+        if (movecheck === false) movecheck = true;
         activetooltip = {id:-1,pos:null}
         tooltip.hide();
         return;
