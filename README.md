@@ -1,7 +1,8 @@
 Live Map for Vice City Multiplayer
 ============
 
-The map uses the ``data.json`` file in its web directory, which you have to update from the server, by default every 5 seconds.
+The map uses the ``data.json`` file in its web directory, which you have to update from the server, by default every 5 seconds.  
+You can use the [**JSON module**](https://bitbucket.org/crys/vcmp-modules/wiki/sq_json) made by me to make it easy to export the data to JSON.
 
 You can use online services that can parse or validate your JSON data if it is correct. You can find them at the following URLs:
 * http://jsonlint.com
